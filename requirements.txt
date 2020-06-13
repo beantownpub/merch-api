@@ -1,0 +1,11 @@
+flask
+flask-cors
+flask-mongoengine
+flask-pymongo
+flask-restful
+flask-session
+gunicorn
+mongoengine
+pytz
+pymongo
+redis

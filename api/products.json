@@ -1,0 +1,112 @@
+{
+    "categories": {
+        "tshirts": [
+            {
+                "name": "Sam Adams Shirt",
+                "description": "Shirt with Beantown Slogan",
+                "price": 19.99,
+                "sku": 100,
+                "one_size": false,
+                "sizes": true,
+                "category": "tshirts",
+                "img_path": "/images/merch/sam_adams_shirt.png"
+            },
+            {
+                "name": "Scripted Logo Shirt",
+                "description": "Shirt with Beantown Scripted Logo",
+                "price": 19.99,
+                "sku": 120,
+                "one_size": false,
+                "sizes": true,
+                "category": "tshirts",
+                "img_path": "/images/merch/scripted_logo_shirt.png"
+            },
+            {
+                "name": "Guiness Shirt",
+                "description": "Beantown Guiness Shirt",
+                "price": 19.99,
+                "sku": 130,
+                "one_size": false,
+                "sizes": true,
+                "category": "tshirts",
+                "img_path": "/images/merch/scripted_logo_shirt.png"
+            }
+        ],
+        "sweat_shirts": [
+            {
+                "name": "Beantown Hooded Sweatshirt",
+                "description": "Beantown Pub Hooded Sweatshirt",
+                "price": 39.99,
+                "sku": 200,
+                "one_size": false,
+                "sizes": true,
+                "category": "sweatshirts",
+                "img_path": "/images/merch/hooded_sweatshirt.png"
+            },
+            {
+                "name": "Beantown Crew Sweatshirt",
+                "description": "Beantown  Sweatshirt",
+                "price": 39.99,
+                "sku": 210,
+                "one_size": false,
+                "sizes": true,
+                "category": "sweatshirts",
+                "img_path": "/images/merch/crew_sweatshirt.png"
+            },
+            {
+                "name": "Guiness Hoodie",
+                "description": "Beantown Guiness Hoodie",
+                "price": 49.99,
+                "sku": 230,
+                "one_size": false,
+                "sizes": true,
+                "category": "sweatshirts",
+                "img_path": "/images/merch/scripted_logo_shirt.png"
+            }
+        ],
+        "hats": [
+            {
+                "name": "Beantown Snapback Hat",
+                "description": "Beantown Pub Snapback Hat",
+                "price": 24.99,
+                "sku": 300,
+                "one_size": true,
+                "sizes": false,
+                "category": "hats",
+                "img_path": "/images/merch/hat.jpg"
+            }
+        ],
+        "drinkware": [
+            {
+                "name": "Pint Glass",
+                "description": "Beantown Pub Pint Glass",
+                "price": 5.99,
+                "sku": 400,
+                "one_size": true,
+                "sizes": false,
+                "category": "drinkware",
+                "img_path": "/images/merch/pint_glass.png"
+            },
+            {
+                "name": "Bottle Opener",
+                "description": "Beantown Bottle Openener",
+                "price": 4.99,
+                "one_size": true,
+                "sizes": false,
+                "sku": 420,
+                "category": "drinkware",
+                "img_path": "/images/merch/bottle_opener.png"
+            },
+            {
+                "name": "Shot Glass",
+                "description": "Beantown Shot Glass",
+                "price": 3.99,
+                "one_size": true,
+                "sizes": false,
+                "sku": 401,
+                "category": "drinkware",
+                "img_path": "/images/merch/shot_glass.png"
+            }
+        ]
+    }
+}
