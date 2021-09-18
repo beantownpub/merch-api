@@ -4,7 +4,7 @@ import random
 from flask import Response, request, session
 from flask_restful import Resource
 
-from api.database.models import Cart, CartItem, Product, Customer
+from api.database.mongo_models import Cart, CartItem, Product, Customer
 
 app_log = logging.getLogger()
 
@@ -28,19 +28,19 @@ def _generate_cart_id():
 
 class CartAPI(Resource):
     def get(self):
-        app_log.info('- CartAPI | GET')
+        app_log.info('SESSION: %s', session.keys())
         cart_id = session.get('CART_ID')
         if not cart_id:
-            app_log.info('- CartAPI | GET | cart_id not found')
+            # app_log.info('- CartAPI | GET | cart_id not found')
             cart = self.create_cart()
             cart_id = cart.cart_id
-            app_log.info('- NEW CART: %s', cart)
-            app_log.info('- CartAPI | GET | New Cart ID: %s', cart_id)
+            # app_log.info('- NEW CART: %s', cart)
+            # app_log.info('- CartAPI | GET | New Cart ID: %s', cart_id)
         else:
             cart = self.get_cart(cart_id).to_json()
-            app_log.info('- CartAPI | GET | Cart ID %s', cart_id)
+            # app_log.info('- CartAPI | GET | Cart ID %s', cart_id)
         cart_info = self.get_cart_items(cart_id)
-        app_log.info('- CartAPI | GET | Cart INFO: %s', cart_info)
+        # app_log.info('- CartAPI | GET | Cart INFO: %s', cart_info)
         return Response(json.dumps(cart_info), mimetype='application/json', status=200)
 
     def post(self):
@@ -48,7 +48,6 @@ class CartAPI(Resource):
         cart_id = session.get('CART_ID')
         cart = Cart.objects(cart_id=cart_id).first()
         body = request.get_json()
-        app_log.info('- CartAPI | Body: %s', body)
         sku = body['sku']
         quantity = body['quantity']
         size = body['size']
@@ -58,7 +57,7 @@ class CartAPI(Resource):
         cart.cart_items.append(cart_item)
         cart.save()
         cart_info = self.get_cart_items(cart_id)
-        app_log.info('- CartAPI | POST | Cart INFO: %s', cart_info)
+        # app_log.info('- CartAPI | POST | Cart INFO: %s', cart_info)
         return Response(json.dumps(cart_info), mimetype='application/json', status=200)
 
     def delete(self):
@@ -68,11 +67,16 @@ class CartAPI(Resource):
         product = Product.objects(sku=int(sku)).first()
         cart_item = CartItem.objects(item=product, cart_id=cart_id).first()
         cart = Cart.objects(cart_id=cart_id).first()
-        cart.cart_items.remove(cart_item)
-        cart.save()
-        cart_item.delete()
+        try:
+            cart.cart_items.remove(cart_item)
+            cart.save()
+            cart_item.delete()
+        except ValueError:
+            app_log.error('WTF')
+            Cart.objects(cart_id=cart_id).delete()
+            cart = self.create_cart()
         cart_info = self.get_cart_items(cart_id)
-        app_log.info('- CartAPI | DELETE | Cart INFO: %s', cart_info)
+        # app_log.info('- CartAPI | DELETE | Cart INFO: %s', cart_info)
         return Response(json.dumps(cart_info), mimetype='application/json', status=200)
 
     def create_cart(self, cart_id=None):

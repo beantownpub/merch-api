@@ -3,6 +3,7 @@ from flask import Response, request
 from flask_restful import Resource
 
 from api.database.models import Product
+# from api.database.models import DoesNotExist
 
 app_log = logging.getLogger()
 
@@ -21,6 +22,20 @@ class ProductsAPI(Resource):
         body = request.get_json()
         logging.info(body)
         product = Product(**body).save()
+        _id = product.id
+        return {'id': str(_id)}, 200
+
+    def put(self):
+        body = request.get_json()
+        sku = body['sku']
+        logging.info(f"SKU: {sku}")
+        try:
+            product = Product.objects.get(sku=sku)
+            Product.objects.get(sku=sku).update(**body)
+        except Product.DoesNotExist:
+            logging.info('CREATING ITEM')
+            self.post()
+            product = Product.objects.get(sku=sku)
         _id = product.id
         return {'id': str(_id)}, 200
 
@@ -48,6 +63,6 @@ class ProductAPI(Resource):
 class CategoryAPI(Resource):
     def get(self, category):
         products = Product.objects(category=category).to_json()
-        app_log.info('- CategoryAPI | GET | Category: %s', category)
-        app_log.info('- CategoryAPI | GET | Products: %s', products)
+        # app_log.info('- CategoryAPI | GET | Category: %s', category)
+        # app_log.info('- CategoryAPI | GET | Products: %s', products)
         return Response(products, mimetype='application/json', status=200)

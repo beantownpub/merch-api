@@ -1,72 +1,61 @@
-import logging
 from datetime import datetime
-
-from .db import db
-
-
-logging.info('WTF DB\n%s', db)
-logging.info('WTF DB\n%s', dir(db))
+from .pg_db import db
 
 
-class Inventory(db.Document):
-    small = db.IntField(default=0)
-    medium = db.IntField(default=0)
-    large = db.IntField(default=0)
-    xl = db.IntField(default=0)
-    xxl = db.IntField(default=0)
-    quantity = db.IntField(default=0)
-    one_size = db.BooleanField(default=False)
-    sizes = db.BooleanField()
+class Product(db.Model):
+    __tablename__ = 'product'
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    description = db.Column(db.String)
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean)
+    price = db.Column(db.Float)
+    category_id = db.Column(db.String, db.ForeignKey('category.name'), nullable=False)
+    inventory_id = db.Column(db.String, db.ForeignKey('inventory.name'), nullable=False)
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
+    name = db.Column(db.String(50), unique=True)
+    is_active = db.Column(db.Boolean)
+    has_sizes = db.Column(db.Boolean)
+    products = db.relationship('Product', backref='category', lazy=True)
+
+    def __repr__(self):
+        return '<Category %r>' % self.name
+
+
+class Inventory(db.Model):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
+    name = db.Column(db.String(50), unique=True)
+    small = db.Column(db.Integer, default=0)
+    medium = db.Column(db.Integer, default=0)
+    large = db.Column(db.Integer, default=0)
+    xl = db.Column(db.Integer, default=0)
+    xxl = db.Column(db.Integer, default=0)
+    quantity = db.Column(db.Integer, default=0)
+    has_sizes = db.Column(db.Boolean, default=False)
+    product = db.relationship('Product', backref='inventory', lazy=True)
 
     @property
     def total(self):
-        if not self.one_size:
+        if not self.has_sizes:
             total = self.small + self.medium + self.large + self.xl + self.xxl
         else:
             total = self.quantity
         return total
 
 
-class Product(db.Document):
-    name = db.StringField(max_length=120)
-    category = db.StringField()
-    description = db.StringField()
-    price = db.FloatField()
-    sku = db.IntField(unique=True)
-    is_active = db.BooleanField(default=True)
-    quantity = db.ReferenceField(Inventory)
-    one_size = db.BooleanField()
-    sizes = db.BooleanField()
-    img_path = db.StringField()
-    meta = {'allow_inheritance': True}
-
-    @property
-    def slug(self):
-        slug = self.name.lower().replace(' ', '-')
-        return slug
+class CartItem(db.Model):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
+    item_count = db.Column(db.Integer, default=1)
+    time_added = db.Column(db.DateTime, default=datetime.utcnow)
+    product = db.relationship('Product', backref='inventory', lazy=True)
+    cart_id = db.Column(db.String, db.ForeignKey('cart.id'), nullable=False)
+    size = db.Column(db.String(12), default='one_size')
 
 
-class CartItem(db.Document):
-    item_count = db.IntField(default=1)
-    time_added = db.DateTimeField(default=datetime.utcnow)
-    item = db.ReferenceField(Product)
-    cart_id = db.StringField(max_length=25)
-    size = db.StringField(default='one_size')
-
-
-class Cart(db.Document):
-    cart_id = db.StringField(max_length=120, unique=True)
-    time_created = db.DateTimeField(default=datetime.utcnow)
-    cart_items = db.ListField(db.ReferenceField(CartItem))
-
-
-class Customer(db.Document):
-    first_name = db.StringField()
-    last_name = db.StringField()
-    info = db.DictField()
-
-
-class Order(db.Document):
-    customer = db.ReferenceField(Customer)
-    cart = db.ReferenceField(Cart)
-    completed = db.BooleanField(default=False)
+class Cart(db.Model):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
+    time_created = db.Column(db.DateTime, default=datetime.utcnow)
+    cart_items = db.relationship('Product', backref='category', lazy=True)

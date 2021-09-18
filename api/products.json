@@ -2,110 +2,186 @@
     "categories": {
         "tshirts": [
             {
-                "name": "Sam Adams Shirt",
+                "name": "Motto Shirt",
                 "description": "Shirt with Beantown Slogan",
-                "price": 19.99,
+                "price": 23.99,
                 "sku": 100,
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/sam_adams_shirt.png"
+                "img_path": "/images/merch/sam_adams_shirt.png",
+                "img_name": "motto_shirt.jpg"
             },
             {
                 "name": "Scripted Logo Shirt",
                 "description": "Shirt with Beantown Scripted Logo",
-                "price": 19.99,
+                "price": 23.99,
                 "sku": 120,
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/scripted_logo_shirt.png"
+                "img_path": "/images/merch/scripted_logo_shirt.png",
+                "img_name": "scripted_logo_shirt.jpg"
+            },
+            {
+                "name": "Entering Beantown",
+                "description": "Beantown Pub MA Sign Shirt",
+                "price": 23.99,
+                "sku": 150,
+                "one_size": false,
+                "sizes": true,
+                "category": "tshirts",
+                "img_path": "/images/merch/entering_btown.png",
+                "img_name": "entering_btown.jpg"
             },
             {
                 "name": "Guiness Shirt",
                 "description": "Beantown Guiness Shirt",
-                "price": 19.99,
+                "price": 23.99,
                 "sku": 130,
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/scripted_logo_shirt.png"
-            }
-        ],
-        "sweat_shirts": [
-            {
-                "name": "Beantown Hooded Sweatshirt",
-                "description": "Beantown Pub Hooded Sweatshirt",
-                "price": 39.99,
-                "sku": 200,
-                "one_size": false,
-                "sizes": true,
-                "category": "sweatshirts",
-                "img_path": "/images/merch/hooded_sweatshirt.png"
+                "img_path": "/images/merch/scripted_logo_shirt.png",
+                "img_name": "guiness_shirt.jpg"
             },
             {
-                "name": "Beantown Crew Sweatshirt",
-                "description": "Beantown  Sweatshirt",
-                "price": 39.99,
-                "sku": 210,
+                "name": "Sam Adams Shirt",
+                "description": "Sam Adams Shirt",
+                "price": 23.99,
+                "sku": 140,
                 "one_size": false,
                 "sizes": true,
-                "category": "sweatshirts",
-                "img_path": "/images/merch/crew_sweatshirt.png"
-            },
-            {
-                "name": "Guiness Hoodie",
-                "description": "Beantown Guiness Hoodie",
-                "price": 49.99,
-                "sku": 230,
-                "one_size": false,
-                "sizes": true,
-                "category": "sweatshirts",
-                "img_path": "/images/merch/scripted_logo_shirt.png"
+                "category": "tshirts",
+                "img_path": "/images/merch/sam_adams_oyster.png",
+                "img_name": "sam_adams_oyster.jpg"
             }
         ],
         "hats": [
             {
-                "name": "Beantown Snapback Hat",
+                "name": "Scripted Snapback Hat",
                 "description": "Beantown Pub Snapback Hat",
-                "price": 24.99,
+                "price": 19.99,
                 "sku": 300,
                 "one_size": true,
                 "sizes": false,
                 "category": "hats",
-                "img_path": "/images/merch/hat.jpg"
+                "img_path": "/images/merch/script_hat.jpg",
+                "img_name": "script_hat.jpg"
+            },
+            {
+                "name": "Leather Strap",
+                "description": "Beantown Pub Leather Strap Hat",
+                "price": 19.99,
+                "sku": 301,
+                "one_size": true,
+                "sizes": false,
+                "category": "hats",
+                "img_path": "/images/merch/leather_strap_hat.jpg",
+                "img_name": "leather_strap_hat.jpg"
+            },
+            {
+                "name": "USA Hat",
+                "description": "Beantown Pub USA Hat",
+                "price": 19.99,
+                "sku": 302,
+                "one_size": true,
+                "sizes": false,
+                "category": "hats",
+                "img_path": "/images/merch/btown_usa_hat.jpg",
+                "img_name": "btown_usa_hat.jpg"
             }
         ],
         "drinkware": [
             {
-                "name": "Pint Glass",
-                "description": "Beantown Pub Pint Glass",
-                "price": 5.99,
+                "name": "16oz Mug",
+                "description": "Beantown Pub Glass Mug",
+                "price": 9.99,
                 "sku": 400,
                 "one_size": true,
                 "sizes": false,
                 "category": "drinkware",
-                "img_path": "/images/merch/pint_glass.png"
+                "img_path": "/images/merch/pint_glass.png",
+                "img_name": "mug.jpg"
             },
             {
-                "name": "Bottle Opener",
-                "description": "Beantown Bottle Openener",
-                "price": 4.99,
+                "name": "32oz Stein",
+                "description": "Beantown Pub Glass Stein",
+                "price": 19.99,
+                "sku": 401,
                 "one_size": true,
                 "sizes": false,
-                "sku": 420,
                 "category": "drinkware",
-                "img_path": "/images/merch/bottle_opener.png"
+                "img_path": "/images/merch/pint_glass.png",
+                "img_name": "stein.jpg"
+            },
+            {
+                "name": "16oz Sili Pint",
+                "description": "Beantown Traveling Pint",
+                "price": 19.99,
+                "one_size": true,
+                "sizes": false,
+                "sku": 402,
+                "category": "drinkware",
+                "img_path": "/images/merch/bottle_opener.png",
+                "img_name": "sili_pint.jpg"
             },
             {
                 "name": "Shot Glass",
                 "description": "Beantown Shot Glass",
-                "price": 3.99,
+                "price": 6.99,
                 "one_size": true,
                 "sizes": false,
-                "sku": 401,
+                "sku": 403,
                 "category": "drinkware",
-                "img_path": "/images/merch/shot_glass.png"
+                "img_path": "/images/merch/shot_glass.png",
+                "img_name": "shot_glass.jpg"
+            },
+            {
+                "name": "Sili Shot Glass",
+                "description": "Beantown Shot Glass",
+                "price": 6.99,
+                "one_size": true,
+                "sizes": false,
+                "sku": 404,
+                "category": "drinkware",
+                "img_path": "/images/merch/shot_glass.png",
+                "img_name": "sili_shot_glass.jpg"
+            },
+            {
+                "name": "Koozie",
+                "description": "Beantown Koozie",
+                "price": 5.99,
+                "one_size": true,
+                "sizes": false,
+                "sku": 405,
+                "category": "drinkware",
+                "img_path": "/images/merch/shot_glass.png",
+                "img_name": "koozie.jpg"
+            }
+        ],
+        "accessories": [
+            {
+                "name": "Poncho",
+                "description": "Beantown Pub Rain Poncho",
+                "price": 4.99,
+                "sku": 500,
+                "one_size": true,
+                "sizes": false,
+                "category": "accessories",
+                "img_path": "/images/merch/hat.jpg",
+                "img_name": "poncho.jpg"
+            },
+            {
+                "name": "Umbrella",
+                "description": "Beantown Pub Umbrella",
+                "price": 14.99,
+                "sku": 501,
+                "one_size": true,
+                "sizes": false,
+                "category": "accessories",
+                "img_path": "/images/merch/hat.jpg",
+                "img_name": "umbrella.png"
             }
         ]
     }

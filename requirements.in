@@ -1,0 +1,15 @@
+flask
+flask-cors
+flask-httpauth
+flask-mongoengine
+flask-pymongo
+flask-restful
+flask-session
+flask-sqlalchemy
+gunicorn
+mongoengine
+psycopg2
+pytz
+pymongo
+requests
+jwt
