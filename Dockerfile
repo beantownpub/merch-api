@@ -1,5 +1,7 @@
 FROM python:3.8-slim-buster
 
+ARG workers=2
+
 ENV TINI_VERSION v0.18.0
 
 RUN apt-get update -y && \
@@ -24,4 +26,4 @@ WORKDIR /opt/app
 
 EXPOSE 5000
 
-CMD ["gunicorn", "-w 2", "-b :5000", "server:APP"]
+CMD ["gunicorn", "-w ${workers}", "-b :5000", "server:APP"]

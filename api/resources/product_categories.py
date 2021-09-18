@@ -8,8 +8,8 @@ from flask import Response, request, session
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
-from api.database.pg_models import Category, Product
-from api.database.pg_db import db
+from api.database.models import Category, Product
+from api.database.db import db
 
 
 if __name__ != '__main__':

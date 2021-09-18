@@ -1,5 +1,5 @@
 from datetime import datetime
-from .pg_db import db
+from .db import db
 
 
 class Product(db.Model):
@@ -50,12 +50,28 @@ class CartItem(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
     item_count = db.Column(db.Integer, default=1)
     time_added = db.Column(db.DateTime, default=datetime.utcnow)
-    product = db.relationship('Product', backref='inventory', lazy=True)
-    cart_id = db.Column(db.String, db.ForeignKey('cart.id'), nullable=False)
+    product = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    cart_id = db.Column(db.Integer, db.ForeignKey('cart.id'), nullable=False)
     size = db.Column(db.String(12), default='one_size')
 
 
 class Cart(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
     time_created = db.Column(db.DateTime, default=datetime.utcnow)
-    cart_items = db.relationship('Product', backref='category', lazy=True)
+    cart_items = db.relationship('CartItem', backref='items', lazy=True)
+
+
+class Customer(db.Model):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
+    first_name = db.Column(db.String(50), unique=True)
+    last_name = db.Column(db.String(50), unique=True)
+    address = db.Column(db.String(50), unique=True)
+
+
+class Order(db.Model):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    cart = db.Column(db.Integer, db.ForeignKey('cart.id'), nullable=False)
+    completed = db.Column(db.Boolean, default=False)
+    nonce = db.Column(db.String(120), unique=True)
+    time_created = db.Column(db.DateTime, default=datetime.utcnow)

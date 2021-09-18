@@ -5,6 +5,10 @@ image ?= $(name)
 repo ?= jalgraves
 tag ?= $(shell yq eval '.info.version' swagger.yaml)
 
+compile:
+		cp requirements.txt prev-requirements.txt
+		pip-compile requirements.in
+
 build:
 		@echo "\033[1;32m. . . Building Contact API image . . .\033[1;37m\n"
 		docker build -t $(image):$(tag) .
@@ -35,6 +39,29 @@ start:
 stop:
 		docker rm -f merch_api || true
 
+mongo:
+		@echo "\033[1;32m. . . Starting MongoDB container . . .\n"
+		mkdir -p ${PWD}/data || true
+		docker run \
+			-d \
+			-p 27017-27019:27017-27019 \
+			-e MONGO_INITDB_ROOT_PASSWORD=${BEANTOWN_MONGO_PW} \
+			-e MONGO_INITDB_ROOT_USERNAME=${MONGO_USER} \
+			-v ${PWD}/data:/data/db \
+			--name mongodb \
+			--restart always \
+			mongo:4.0.13-xenial
+
+mongo_no_auth:
+		@echo "\033[1;32m. . . Starting MongoDB container . . .\033[1;37m\n"
+		mkdir -p ${PWD}/data || true
+		docker run \
+			-d \
+			-p 27017-27019:27017-27019 \
+			-v ${PWD}/data:/data/db \
+			--name mongodb \
+			--restart always \
+			mongo:4.0.13-xenial
 
 pg:
 		docker run \
@@ -42,10 +69,6 @@ pg:
 			-p 5432:5432 \
 			-e POSTGRES_PASSWORD=T84xcUb3jBrU6jHZLa29DP2muFGJ \
 			postgres:13.1
-
-compile:
-		cp requirements.txt prev-requirements.txt
-		pip-compile requirements.in
 
 clean:
 		rm -rf api/__pycache__ || true

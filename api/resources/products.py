@@ -7,7 +7,7 @@ from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
 from api.database.models import Product, Category, Inventory
-from api.database.pg_db import db
+from api.database.db import db
 
 
 AUTH = HTTPBasicAuth()
@@ -157,7 +157,7 @@ def update_product(product_name):
         db.session.commit()
 
 
-class ProdAPI(Resource):
+class ProductAPI(Resource):
     def post(self):
         product = create_product(request)
         if product:
@@ -198,7 +198,7 @@ class ProdAPI(Resource):
         return '', 200
 
 
-class ProdsAPI(Resource):
+class ProductsAPI(Resource):
     def get(self, category):
         products = get_active_products_by_category(category)
         if products:

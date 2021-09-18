@@ -1,36 +1,20 @@
-import os
-import socket
-
-from flask_mongoengine import MongoEngine
-from flask_mongoengine.connection import mongoengine
-
 import logging
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()
 
-class MongoHostException(Exception):
-    """Base class for mongodb host exceptions"""
-
-
-db = MongoEngine()
-mongoengine.disconnect()
-
-
-def get_mongo_host():
-    mongo_host = os.environ.get('MONGO_HOST')
-    if not mongo_host:
-        host = socket.gethostname()
-        if host.endswith('local') or host.endswith('internal'):
-            mongo_host = 'localhost'
-        else:
-            err_msg = [
-                "MongoDB hostname or address Not Found",
-                "Set -e MONGO_HOST=<hostname or address> when starting API container"
-            ]
-            err_msg = '\n'.join(err_msg)
-            logging.error(err_msg)
-            raise MongoHostException(err_msg)
-    return mongo_host
+if __name__ != '__main__':
+    app_log = logging.getLogger()
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app_log.handlers = gunicorn_logger.handlers
+    app_log.setLevel('INFO')
 
 
 def init_database(app):
-    db.init_app(app)
+    db.init_app(app=app)
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception as err:
+            app_log.error('\n\n\n* * * WTF * * *\n\n')
+            raise err

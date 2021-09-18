@@ -6,7 +6,6 @@ from flask_restful import Api
 from flask_cors import CORS
 
 from api.database.db import init_database
-from api.database.pg_db import init_pg
 from api.resources.routes import init_routes
 
 
@@ -22,23 +21,27 @@ PSQL = {
     'user': os.environ.get('DB_USER'),
     'password': os.environ.get('DB_PASSWORD'),
     'host': os.environ.get('DB_HOST'),
-    'db': os.environ.get('DB_NAME'),
+    'name': os.environ.get('DB_NAME'),
     'port': os.environ.get('DB_PORT')
 }
 
+MERCH_DB = [
+    f"postgresql://{PSQL['user']}:{PSQL['password']}",
+    f"{PSQL['host']}:{PSQL['port']}/{PSQL['name']}"
+]
 
-APP.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{PSQL['user']}:{PSQL['password']}@{PSQL['host']}:5432/merch"
+SESSIONS_DB = [
+    f"postgresql://{PSQL['user']}:{PSQL['password']}",
+    f"{PSQL['host']}:{PSQL['port']}/sessions"
+]
+
+APP.config['SESSION_TYPE'] = "sqlalchemy"
+APP.config['SESSION_SQLALCHEMY'] = "@".join(MERCH_DB)
+APP.config['SESSION_SQLALCHEMY_TABLE'] = "sessions"
+APP.config['SQLALCHEMY_DATABASE_URI'] = "@".join(MERCH_DB)
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 APP.config['CORS_ALLOW_HEADERS'] = True
 APP.config['CORS_EXPOSE_HEADERS'] = True
-APP.config['MONGODB_SETTINGS'] = {
-    'host': os.environ.get('MONGO_HOST'),
-    'db': os.environ.get('MONGO_DB'),
-    'username': os.environ.get('MONGO_USER'),
-    'password': os.environ.get('MONGO_PW'),
-    'connect': False
-}
 
 cors = CORS(
     APP,
@@ -46,9 +49,11 @@ cors = CORS(
     supports_credentials=True
 )
 
-init_pg(APP)
+APP.logger.info('Initializing database')
 init_database(APP)
+APP.logger.info('%s DB initialized', PSQL['name'])
 init_routes(API)
+APP.logger.info('Routes initialized')
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')

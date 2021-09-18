@@ -4,7 +4,7 @@ import random
 from flask import Response, request, session
 from flask_restful import Resource
 
-from api.database.mongo_models import Cart, CartItem, Product, Customer
+from api.database.models import Cart, CartItem, Product, Customer
 
 app_log = logging.getLogger()
 
