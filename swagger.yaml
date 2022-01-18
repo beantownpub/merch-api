@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: Merch API
+  description: An API for interacting with merchandise
+
+servers:
+  - url: http://merch-api/v1
+
+security:
+  - BasicAuth: []
+
+paths:
+  /merch/products/{category}:
+    get:
+      description: Returns a list products from a category
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageOffset'
+      responses:
+        '200':
+          description: Successfully returned a list of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+        '400':
+          $ref: '#/components/responses/400Error'
+
+    post:
+      description: Lets a user post a new message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItem'
+
+      responses:
+        '200':
+          description: Successfully returned food items
+
+        '400':
+          $ref: '#/components/responses/400Error'
+
+  /merch/cart}:
+    get:
+      description: Return shopping cart for single session
+      parameters:
+        - name: item
+          in: path
+          required: true
+          schema:
+            type: object
+            items:
+              $ref: '#/components/schemas/Cart'
+
+      responses:
+        '200':
+          description: Successfully returned a message
+          content:
+            application/json:
+              schema:
+                $ref: '#/menu/section/<category>'
+
+        '400':
+          $ref: '#/components/responses/400Error'
+
+  /message/{location}:
+    post:
+      description: Lets a user post a new message from a certain location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/menu/section/<category>'
+
+      responses:
+        '200':
+          description: Successfully created a new menu item
+
+        '400':
+          $ref: '#/components/responses/400Error'
+
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Product:
+      type: object
+      required:
+        - username
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        is_active:
+          type: any
+        category:
+          type: string
+    Category:
+      type: object
+      required:
+        - username
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        is_active:
+          type: any
+        category:
+          type: string
+    Cart:
+      type: object
+      required:
+        - username
+      properties:
+        cart_id:
+          type: string
+        cart_items:
+          type: list
+        total:
+          type: float
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: Limits the number of items on a page
+      schema:
+        type: integer
+
+    PageOffset:
+      name: offset
+      in: query
+      description: Specifies the page number of the messages to be displayed
+      schema:
+        type: integer
+
+  responses:
+    400Error:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string

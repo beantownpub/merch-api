@@ -89,5 +89,5 @@ def get_sessions():
 
 
 if __name__ == '__main__':
-    # reload_products()
-    _delete_products()
+    reload_products()
+
