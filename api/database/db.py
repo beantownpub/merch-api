@@ -16,5 +16,5 @@ def init_database(app):
         try:
             db.create_all()
         except Exception as err:
-            app_log.error('\n\n\n* * * WTF * * *\n\n')
+            app_log.error('\n* * * Error setting up DBs * * *\n')
             raise err

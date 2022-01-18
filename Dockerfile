@@ -1,8 +1,6 @@
 FROM python:3.8-slim-buster
 
-ARG workers=2
-
-ENV TINI_VERSION v0.18.0
+ENV TINI_VERSION=v0.19.0
 
 RUN apt-get update -y && \
     apt-get install -y postgresql libpq-dev gcc && \
@@ -24,6 +22,4 @@ ENTRYPOINT ["/tini", "-s", "--"]
 
 WORKDIR /opt/app
 
-EXPOSE 5000
-
-CMD ["gunicorn", "-w ${workers}", "-b :5000", "server:APP"]
+CMD ["gunicorn", "-w 1", "-b :5000", "server:APP"]

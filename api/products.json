@@ -9,8 +9,9 @@
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/sam_adams_shirt.png",
-                "img_name": "motto_shirt.jpg"
+                "image_path": "/images/merch/sam_adams_shirt.png",
+                "image_name": "motto_shirt.jpg",
+                "is_active": true
             },
             {
                 "name": "Scripted Logo Shirt",
@@ -20,8 +21,9 @@
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/scripted_logo_shirt.png",
-                "img_name": "scripted_logo_shirt.jpg"
+                "image_path": "/images/merch/scripted_logo_shirt.png",
+                "image_name": "scripted_logo_shirt.jpg",
+                "is_active": true
             },
             {
                 "name": "Entering Beantown",
@@ -31,8 +33,9 @@
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/entering_btown.png",
-                "img_name": "entering_btown.jpg"
+                "image_path": "/images/merch/entering_btown.png",
+                "image_name": "entering_btown.jpg",
+                "is_active": true
             },
             {
                 "name": "Guiness Shirt",
@@ -42,8 +45,9 @@
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/scripted_logo_shirt.png",
-                "img_name": "guiness_shirt.jpg"
+                "image_path": "/images/merch/scripted_logo_shirt.png",
+                "image_name": "guiness_shirt.jpg",
+                "is_active": true
             },
             {
                 "name": "Sam Adams Shirt",
@@ -53,8 +57,9 @@
                 "one_size": false,
                 "sizes": true,
                 "category": "tshirts",
-                "img_path": "/images/merch/sam_adams_oyster.png",
-                "img_name": "sam_adams_oyster.jpg"
+                "image_path": "/images/merch/sam_adams_oyster.png",
+                "image_name": "sam_adams_oyster.jpg",
+                "is_active": true
             }
         ],
         "hats": [
@@ -66,8 +71,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "hats",
-                "img_path": "/images/merch/script_hat.jpg",
-                "img_name": "script_hat.jpg"
+                "image_path": "/images/merch/script_hat.jpg",
+                "image_name": "script_hat.jpg",
+                "is_active": true
             },
             {
                 "name": "Leather Strap",
@@ -77,8 +83,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "hats",
-                "img_path": "/images/merch/leather_strap_hat.jpg",
-                "img_name": "leather_strap_hat.jpg"
+                "image_path": "/images/merch/leather_strap_hat.jpg",
+                "image_name": "leather_strap_hat.jpg",
+                "is_active": true
             },
             {
                 "name": "USA Hat",
@@ -88,8 +95,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "hats",
-                "img_path": "/images/merch/btown_usa_hat.jpg",
-                "img_name": "btown_usa_hat.jpg"
+                "image_path": "/images/merch/btown_usa_hat.jpg",
+                "image_name": "btown_usa_hat.jpg",
+                "is_active": true
             }
         ],
         "drinkware": [
@@ -101,8 +109,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "drinkware",
-                "img_path": "/images/merch/pint_glass.png",
-                "img_name": "mug.jpg"
+                "image_path": "/images/merch/pint_glass.png",
+                "image_name": "mug.jpg",
+                "is_active": true
             },
             {
                 "name": "32oz Stein",
@@ -112,8 +121,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "drinkware",
-                "img_path": "/images/merch/pint_glass.png",
-                "img_name": "stein.jpg"
+                "image_path": "/images/merch/pint_glass.png",
+                "image_name": "stein.jpg",
+                "is_active": true
             },
             {
                 "name": "16oz Sili Pint",
@@ -123,8 +133,9 @@
                 "sizes": false,
                 "sku": 402,
                 "category": "drinkware",
-                "img_path": "/images/merch/bottle_opener.png",
-                "img_name": "sili_pint.jpg"
+                "image_path": "/images/merch/bottle_opener.png",
+                "image_name": "sili_pint.jpg",
+                "is_active": true
             },
             {
                 "name": "Shot Glass",
@@ -134,8 +145,9 @@
                 "sizes": false,
                 "sku": 403,
                 "category": "drinkware",
-                "img_path": "/images/merch/shot_glass.png",
-                "img_name": "shot_glass.jpg"
+                "image_path": "/images/merch/shot_glass.png",
+                "image_name": "shot_glass.jpg",
+                "is_active": true
             },
             {
                 "name": "Sili Shot Glass",
@@ -145,8 +157,9 @@
                 "sizes": false,
                 "sku": 404,
                 "category": "drinkware",
-                "img_path": "/images/merch/shot_glass.png",
-                "img_name": "sili_shot_glass.jpg"
+                "image_path": "/images/merch/shot_glass.png",
+                "image_name": "sili_shot_glass.jpg",
+                "is_active": true
             },
             {
                 "name": "Koozie",
@@ -156,8 +169,9 @@
                 "sizes": false,
                 "sku": 405,
                 "category": "drinkware",
-                "img_path": "/images/merch/shot_glass.png",
-                "img_name": "koozie.jpg"
+                "image_path": "/images/merch/shot_glass.png",
+                "image_name": "koozie.jpg",
+                "is_active": true
             }
         ],
         "accessories": [
@@ -169,8 +183,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "accessories",
-                "img_path": "/images/merch/hat.jpg",
-                "img_name": "poncho.jpg"
+                "image_path": "/images/merch/hat.jpg",
+                "image_name": "poncho.jpg",
+                "is_active": true
             },
             {
                 "name": "Umbrella",
@@ -180,8 +195,9 @@
                 "one_size": true,
                 "sizes": false,
                 "category": "accessories",
-                "img_path": "/images/merch/hat.jpg",
-                "img_name": "umbrella.png"
+                "image_path": "/images/merch/hat.jpg",
+                "image_name": "umbrella.png",
+                "is_active": true
             }
         ]
     }

@@ -45,9 +45,9 @@ paths:
         '400':
           $ref: '#/components/responses/400Error'
 
-  /menu/items/{item}:
+  /merch/cart}:
     get:
-      description: Return a single product
+      description: Return shopping cart for single session
       parameters:
         - name: item
           in: path
@@ -55,7 +55,7 @@ paths:
           schema:
             type: object
             items:
-              $ref: '#/components/schemas/MenuItem'
+              $ref: '#/components/schemas/Cart'
 
       responses:
         '200':
@@ -63,16 +63,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  phone_number:
-                    type: string
-                  email_address:
-                    type: integer
-                  details:
-                    type: string
+                $ref: '#/menu/section/<category>'
 
         '400':
           $ref: '#/components/responses/400Error'
@@ -100,7 +91,7 @@ components:
       type: http
       scheme: basic
   schemas:
-    MenuItem:
+    Product:
       type: object
       required:
         - username
@@ -134,6 +125,17 @@ components:
           type: any
         category:
           type: string
+    Cart:
+      type: object
+      required:
+        - username
+      properties:
+        cart_id:
+          type: string
+        cart_items:
+          type: list
+        total:
+          type: float
   parameters:
     PageLimit:
       name: limit

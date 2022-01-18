@@ -9,9 +9,9 @@ def get_products():
     return products
 
 
-def post_item(menu_item):
-    url = 'http://localhost:5000/v1/merch/products'
-    r = requests.post(url, json=menu_item)
+def post_item(product):
+    url = 'http://localhost:5000/v2/products'
+    r = requests.post(url, json=product)
     if r.status_code != 200:
         print(r.content)
     else:
@@ -35,10 +35,10 @@ def delete_item(menu_item):
 
 if __name__ == '__main__':
     print(__file__)
-    menu = get_products()
-    sections = menu['categories'].keys()
+    products = get_products()
+    sections = products['categories'].keys()
     for section in sections:
-        items = menu['categories'][section]
+        items = products['categories'][section]
         for i in items:
             if sys.argv[1] == 'add':
                 post_item(i)

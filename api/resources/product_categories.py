@@ -2,9 +2,7 @@ import json
 import os
 import logging
 
-import psycopg2
-
-from flask import Response, request, session
+from flask import Response, request
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
@@ -16,7 +14,8 @@ if __name__ != '__main__':
     app_log = logging.getLogger()
     gunicorn_logger = logging.getLogger('gunicorn.error')
     app_log.handlers = gunicorn_logger.handlers
-    app_log.setLevel('INFO')
+    log_level = os.environ.get('LOG_LEVEL', 'INFO')
+    app_log.setLevel(log_level)
 
 
 def product_to_dict(product):
@@ -28,12 +27,14 @@ def product_to_dict(product):
         'category': product.category.name,
         'description': product.description,
         'price': product.price,
+        'image_name': product.image_name,
+        'image_path': product.image_path,
         'inventory': inventory
     }
     return product_dict
 
 
-def convert_category(category):
+def category_to_dict(category):
     category_dict = {
         'name': category.name,
         'is_active': category.is_active,
@@ -62,13 +63,7 @@ def inventory_to_dict(inventory):
 def get_category(name):
     category = Category.query.filter_by(name=name).first()
     if category:
-        info = {
-            'name': category.name,
-            'is_active': category.is_active,
-            'has_sizes': category.has_sizes,
-            'id': category.id
-        }
-        return info
+        return category_to_dict(category)
 
 
 def update_category(name, request):
@@ -113,6 +108,18 @@ def get_categories_and_products():
     return category_list
 
 
+def get_products(category):
+    app_log.debug('Category: %s', category)
+    product_list = []
+    products = Product.query.filter(Product.category.has(name=category['name'])).all()
+    if products:
+        app_log.debug('Products: %s', products)
+        for product in products:
+            product_list.append(product_to_dict(product))
+    return product_list
+
+
+
 def create_category(request):
     body = request.get_json()
     name = body['name']
@@ -144,7 +151,7 @@ class CategoriesAPI(Resource):
             return Response(status=404)
 
 
-class CatAPI(Resource):
+class CategoryAPI(Resource):
     def post(self, category):
         app_log.info('Creating category %s', category)
         category = create_category(request)
@@ -162,12 +169,12 @@ class CatAPI(Resource):
         else:
             return Response(status=204)
 
-    def get(self):
-        body = request.get_json()
-        name = body['name']
-        category = get_category(name)
+    def get(self, category):
+        app_log.debug('GET Category: %s', category)
+        category = get_category(category)
         if category:
-            return Response(status=200)
+            products = json.dumps(get_products(category))
+            return Response(products, mimetype='application/json', status=200)
         else:
             return Response(status=404)
 

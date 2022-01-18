@@ -1,9 +1,11 @@
+import datetime
 import logging
 import os
 from urllib.parse import quote_plus
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
+from flask_session import Session
 
 from api.database.db import init_database
 from api.resources.routes import init_routes
@@ -14,7 +16,7 @@ class MerchAPIException(Exception):
 
 
 LOG_LEVEL = os.environ.get('MERCH_API_LOG_LEVEL', 'INFO')
-ORIGIN_URL = os.environ.get('ORIGIN_URL', 'https://beantown.jalgraves.com')
+ORIGIN_URL = os.environ.get('ORIGIN_URL', 'http://localhost:3000')
 APP = Flask(__name__.split('.')[0], instance_path='/opt/app/api')
 API = Api(APP)
 PSQL = {
@@ -30,18 +32,19 @@ MERCH_DB = [
     f"{PSQL['host']}:{PSQL['port']}/{PSQL['name']}"
 ]
 
-SESSIONS_DB = [
-    f"postgresql://{PSQL['user']}:{PSQL['password']}",
-    f"{PSQL['host']}:{PSQL['port']}/sessions"
-]
-
+APP.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
+APP.config['SQLALCHEMY_POOL_SIZE'] = 10
+APP.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
+APP.config['SQLALCHEMY_POOL_RECYCLE'] = 1800
 APP.config['SESSION_TYPE'] = "sqlalchemy"
-APP.config['SESSION_SQLALCHEMY'] = "@".join(MERCH_DB)
+# APP.config['SESSION_SQLALCHEMY'] = "@".join(SESSIONS_DB)
 APP.config['SESSION_SQLALCHEMY_TABLE'] = "sessions"
 APP.config['SQLALCHEMY_DATABASE_URI'] = "@".join(MERCH_DB)
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 APP.config['CORS_ALLOW_HEADERS'] = True
 APP.config['CORS_EXPOSE_HEADERS'] = True
+APP.config['SECRET_KEY'] = '3dc99e1e-bd13-4537-b5fe-b1c49082d840'
+APP.permanent_session_lifetime = datetime.timedelta(days=365)
 
 cors = CORS(
     APP,

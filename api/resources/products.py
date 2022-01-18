@@ -8,6 +8,7 @@ from flask_restful import Resource
 
 from api.database.models import Product, Category, Inventory
 from api.database.db import db
+from api.libs.db_utils import run_db_action, get_item_from_db
 
 
 AUTH = HTTPBasicAuth()
@@ -16,8 +17,8 @@ AUTH = HTTPBasicAuth()
 if __name__ != '__main__':
     app_log = logging.getLogger()
     gunicorn_logger = logging.getLogger('gunicorn.error')
-    app_log.handlers = gunicorn_logger.handlers
-    app_log.setLevel('INFO')
+    log_level = os.environ.get('LOG_LEVEL', 'INFO')
+    app_log.setLevel(log_level)
 
 
 @AUTH.verify_password
@@ -33,43 +34,38 @@ def verify_password(username, password):
 
 
 def get_product(name):
-    product = Product.query.filter_by(name=name).first()
+    product = get_item_from_db('product', {"name": name})
     if product:
         app_log.info('get_product Found %s', name)
-        app_log.info('Prod: %s', dir(product))
-        info = {
-            'name': product.name,
-            'sku': product.id,
-            'has_sizes': product.category.has_sizes,
-            'category': product.category.name,
-            'description': product.description,
-            'price': product.price
-        }
-        app_log.info(info)
-        return info
+        app_log.debug('Prod: %s', dir(product))
+        product_data = product_to_dict(product)
+        return product_data
 
 
 def check_category_status(category):
-    category = Category.query.filter_by(name=category).first()
+    category = get_item_from_db('category', {"name": category})
     if category:
         return category.is_active
 
 
-def convert_product(product):
-    inventory = convert_inventory(product.inventory)
+def product_to_dict(product):
+    inventory = inventory_to_dict(product.inventory)
     product_dict = {
         'name': product.name,
         'sku': product.id,
         'has_sizes': product.category.has_sizes,
+        'sizes': product.category.has_sizes,
         'category': product.category.name,
         'description': product.description,
         'price': product.price,
+        'image_name': product.image_name,
+        'image_path': product.image_path,
         'inventory': inventory
     }
     return product_dict
 
 
-def convert_inventory(inventory):
+def inventory_to_dict(inventory):
     if inventory.has_sizes:
         inventory_dict = {
             'small': inventory.small,
@@ -93,13 +89,13 @@ def get_active_products_by_category(category):
         app_log.info('PRODUCTS: %s', products)
         if products:
             for product in products:
-                product_list.append(convert_product(product))
+                product_list.append(product_to_dict(product))
         app_log.info(products[0].category)
         return product_list
 
 
 def get_category(name):
-    category = Category.query.filter_by(name=name).first()
+    category = get_item_from_db('category', {"name": name})
     if category:
         info = {
             'id': category.name
@@ -117,7 +113,7 @@ def get_all_categories():
 def create_product(request):
     body = request.get_json()
     name = body['name']
-    # sku = body['sku']
+    sku = body['sku']
     description = body['description']
     # category = body['category']
     is_active = body['is_active']
@@ -133,7 +129,10 @@ def create_product(request):
             category_id=category.name,
             inventory_id=inventory.name,
             description=description,
-            price=price
+            price=price,
+            sku=sku,
+            image_name=body['image_name'],
+            image_path=body['image_path']
         )
         db.session.add(product)
         db.session.commit()
