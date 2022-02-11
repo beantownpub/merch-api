@@ -1,7 +1,12 @@
-import random
-
+import os
+import uuid
 from .db_utils import get_item_from_db, run_db_action
+from .logging import init_logger
+LOG_LEVEL= os.environ.get('LOG_LEVEL')
+LOG = init_logger(log_level=LOG_LEVEL)
 
+def make_uuid():
+    return str(uuid.uuid4())
 
 class ParamArgs:
     def __init__(self, args):
@@ -18,6 +23,15 @@ class ParamArgs:
         }
         return args_dict
 
+def db_item_to_dict(item):
+    LOG.debug('db_item_to_dict | %s', item)
+    item_dict = item.__dict__
+    LOG.debug('item dict | %s', item_dict)
+    if item_dict.get('_sa_instance_state'):
+        del item_dict['_sa_instance_state']
+    if item_dict.get('creation_date'):
+        del item_dict['creation_date']
+    return item_dict
 
 def cart_item_to_dict(cart_item):
     item_data = {
@@ -26,18 +40,11 @@ def cart_item_to_dict(cart_item):
         "name": cart_item.product.name,
         "price": cart_item.product.price
     }
+    category = get_item_from_db('category', query={"name": cart_item.product.category_id})
+    if category.has_sizes:
+        item_data["size"] = cart_item.size
     item_data['total'] = item_data['quantity'] * item_data['price']
     return item_data
-
-
-def generate_cart_id():
-    """Generate and return a random cart_id"""
-    cart_id = ''
-    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
-    cart_id_length = 25
-    for _ in range(cart_id_length):
-        cart_id += characters[random.randint(0, len(characters) - 1)]
-    return cart_id
 
 
 def get_cart_items(cart_id):
