@@ -7,28 +7,23 @@ from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
 from api.database.models import Product, Category, Inventory
-from api.database.db import db
+from api.database.db import DB
 from api.libs.db_utils import run_db_action, get_item_from_db
-
+from api.libs.logging import init_logger
 
 AUTH = HTTPBasicAuth()
 
 
-if __name__ != '__main__':
-    app_log = logging.getLogger()
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    log_level = os.environ.get('LOG_LEVEL', 'INFO')
-    app_log.setLevel(log_level)
+LOG_LEVEL= os.environ.get('LOG_LEVEL')
+LOG = init_logger(log_level=LOG_LEVEL)
 
 
 @AUTH.verify_password
 def verify_password(username, password):
     api_pwd = os.environ.get("API_PASSWORD")
-    app_log.info("Verifying %s", username)
     if password.strip() == api_pwd:
         verified = True
     else:
-        app_log.info('Access Denied')
         verified = False
     return verified
 
@@ -36,8 +31,8 @@ def verify_password(username, password):
 def get_product(name):
     product = get_item_from_db('product', {"name": name})
     if product:
-        app_log.info('get_product Found %s', name)
-        app_log.debug('Prod: %s', dir(product))
+        LOG.debug('get_product Found %s', name)
+        LOG.debug('Prod: %s', dir(product))
         product_data = product_to_dict(product)
         return product_data
 
@@ -86,11 +81,11 @@ def get_active_products_by_category(category):
         # products = Product.query.filter(Category.name == category).all()
         product_list = []
         products = Product.query.filter(Product.category.has(name=category)).all()
-        app_log.info('PRODUCTS: %s', products)
+        LOG.debug('PRODUCTS: %s', products)
         if products:
             for product in products:
                 product_list.append(product_to_dict(product))
-        app_log.info(products[0].category)
+        LOG.debug(products[0].category)
         return product_list
 
 
@@ -106,7 +101,7 @@ def get_category(name):
 def get_all_categories():
     categories = Category.query.filter_by().all()
     if categories:
-        app_log.info('CATEGORIES: %s', categories)
+        LOG.info('CATEGORIES: %s', categories)
         return categories
 
 
@@ -121,8 +116,8 @@ def create_product(request):
     if not get_product(name):
         category = Category.query.filter_by(name=body['category']).first()
         inventory = Inventory(name=name, has_sizes=category.has_sizes)
-        db.session.add(inventory)
-        db.session.commit()
+        DB.session.add(inventory)
+        DB.session.commit()
         product = Product(
             name=name,
             is_active=is_active,
@@ -134,8 +129,8 @@ def create_product(request):
             image_name=body['image_name'],
             image_path=body['image_path']
         )
-        db.session.add(product)
-        db.session.commit()
+        DB.session.add(product)
+        DB.session.commit()
     product = get_product(name)
     if product:
         return product
@@ -144,16 +139,16 @@ def create_product(request):
 def delete_product(product_name):
     product = Product.query.filter_by(name=product_name).first()
     if product:
-        db.session.delete(product)
-        db.session.commit()
+        DB.session.delete(product)
+        DB.session.commit()
 
 
 def update_product(product_name):
     product = Product.query.filter_by(name=product_name).first()
     if product:
         product.price = 88.88
-        db.session.add(product)
-        db.session.commit()
+        DB.session.add(product)
+        DB.session.commit()
 
 
 class ProductAPI(Resource):
@@ -175,7 +170,7 @@ class ProductAPI(Resource):
 
     def delete(self):
         body = request.get_json()
-        app_log.info('DELETING %s', body['name'])
+        LOG.debug('DELETING %s', body['name'])
         delete_product(body['name'])
         product = get_product(body['name'])
         if product:
@@ -193,7 +188,7 @@ class ProductAPI(Resource):
             return Response(status=404)
 
     def options(self, location):
-        app_log.info('- MerchAPI | OPTIONS | %s', location)
+        LOG.info('- MerchAPI | OPTIONS | %s', location)
         return '', 200
 
 

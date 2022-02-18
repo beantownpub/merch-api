@@ -1,20 +1,18 @@
-import logging
+import os
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from api.libs.logging import init_logger
 
-if __name__ != '__main__':
-    app_log = logging.getLogger()
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app_log.handlers = gunicorn_logger.handlers
-    app_log.setLevel('INFO')
+DB = SQLAlchemy()
+LOG_LEVEL= os.environ.get('LOG_LEVEL')
+LOG = init_logger(log_level=LOG_LEVEL)
 
 
 def init_database(app):
-    db.init_app(app=app)
+    DB.init_app(app=app)
     with app.app_context():
         try:
-            db.create_all()
+            DB.create_all()
         except Exception as err:
-            app_log.error('\n* * * Error setting up DBs * * *\n')
+            LOG.error('Error initializing DBs: %s', err)
             raise err

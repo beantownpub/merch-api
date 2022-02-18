@@ -1,36 +1,50 @@
 import json
-import logging
 import os
 from flask import Response, request, session
+from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
+from api.libs.logging import init_logger
 from api.libs.db_utils import run_db_action, get_item_from_db
-from api.libs.utils import cart_item_to_dict, generate_cart_id, ParamArgs
+from api.libs.utils import cart_item_to_dict, ParamArgs
 
-app_log = logging.getLogger()
+AUTH = HTTPBasicAuth()
+LOG_LEVEL= os.environ.get('LOG_LEVEL')
+LOG = init_logger(log_level=LOG_LEVEL)
 
 
-if __name__ != '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app_log.handlers = gunicorn_logger.handlers
-    log_level = os.environ.get('LOG_LEVEL', 'INFO')
-    app_log.setLevel(log_level)
+@AUTH.verify_password
+def verify_password(username, password):
+    api_pwd = os.environ.get("API_PASSWORD")
+    if password.strip() == api_pwd:
+        verified = True
+    else:
+        verified = False
+    return verified
 
 
 def add_to_cart(product, data, cart):
+    LOG.debug('Adding to cart | %s | %s', product, data)
     item = {
         "product_id": product.name,
         "item_count": data['quantity'],
-        "cart": cart,
         "cart_id": cart.cart_id
     }
-    # query = {"product": product, "cart_id": cart.cart_id}
+    category = get_item_from_db('category', query={"name": product.category_id})
+    LOG.debug('Cart product category | %s', category.name)
+    LOG.debug('Category sizes | %s', category.has_sizes)
+    if category.has_sizes:
+        item["size"] = data["size"]
     query = {"product": product, "cart_id": cart.cart_id}
     cart_item = get_item_from_db('cart_item', query=query, multiple=False)
     if cart_item:
-        delete_from_cart(product, cart.cart_id)
-    app_log.debug('- Adding to cart: Name: %s | Data: %s', product.name, item)
+        if category.has_sizes:
+            if cart_item.size == data["size"]:
+                delete_from_cart(product, cart.cart_id)
+    LOG.debug('Adding %s to cart | Data: %s', product.name, item)
     run_db_action(action='create', data=item, table='cart_item', query={"cart_id": cart.cart_id})
+    cart_item = get_item_from_db('cart_item', query=query, multiple=False)
+    LOG.debug('CART Items | %s', cart.items)
 
 
 def delete_from_cart(product, cart_id):
@@ -41,76 +55,82 @@ def delete_from_cart(product, cart_id):
 
 
 def _get_cart_items(cart_id):
-    app_log.debug(' - CartAPI | get_cart_items | cart_id: %s', cart_id)
+    LOG.debug('cart_id: %s', cart_id)
     cart_data = {
         'cart_items': [],
         'cart_id': cart_id
     }
     cart = get_item_from_db('cart', query={"cart_id": cart_id})
-    app_log.info('Cart Items debug: %s', cart.items)
-    query = {"cart_id": cart.cart_id}
-    # app_log.info('Getting cart items from db  - Query: %s', query)
-    cart_items = get_item_from_db('cart_item', query=query, multiple=True)
-    app_log.info('Items in cart: %s', cart_items)
-    for item in cart_items:
+    LOG.debug('Cart items debug | %s | %s', cart, cart.items)
+    for item in cart.items:
         if item.product:
-            app_log.info('item: %s', item.product.name)
-            # app_log.debug('Item: %s', item.product.name)
             item_data = cart_item_to_dict(item)
+            LOG.debug('Cart item: %s', item_data)
             cart_data['cart_items'].append(item_data)
         else:
-            app_log.debug('Item not present: %s', item)
+            LOG.debug('Item not present: %s', item)
     cart_data['total'] = _calculate_cart_total(cart)
-    app_log.info('Cart Data: %s', cart_data)
+    LOG.debug('Cart Data: %s', cart_data)
     return cart_data
 
 
 def _calculate_cart_total(cart):
         item_prices = []
-        # app_log.info('Getting cart items from db  - Query: %s', query)
+        # LOG.info('Getting cart items from db  - Query: %s', query)
         cart_items = get_item_from_db('cart_item', query={"cart_id": cart.cart_id}, multiple=True)
-        # cart_items = get_item_from_db('cart_item', query={"cart_id": cart_id}, multiple=True)
         for item in cart_items:
             if item.product:
                 item_count = item.item_count
                 price = item.product.price
                 item_prices.append(item_count * price)
             else:
-                app_log.debug('Item not present: %s', dir(item))
+                LOG.error('Item not present | %s', item)
         return round(sum(item_prices), 2)
 
+
 class CartAPI(Resource):
+    @AUTH.login_required
     def get(self):
-        app_log.debug('Session Items: %s', session.items())
-        cart_id = session.get('CART_ID')
+        LOG.debug('Session Items: %s', session.items())
+        # LOG.info('Headers: %s', request.headers)
+        LOG.debug('CartAPI | GET Cart-Id | %s', request.headers.get('Cart-Id'))
+        cart_id = request.headers.get('Cart-Id')
         if not cart_id:
-            app_log.debug('- CartAPI | GET | cart_id not found')
-            cart = self._create_cart()
+            LOG.error('Cart-Id header not found')
+            resp = {"status": 400, "response": "Cart-Id not found"}
         else:
-            app_log.debug('- CartAPI | GET | SESSION cart_id Found')
-            cart = get_item_from_db('cart', {"cart_id": cart_id})
+            cart = self._create_cart(cart_id=request.headers.get('Cart-Id'))
             if not cart:
-                app_log.debug('- CartAPI | Cart missing from DB')
+                LOG.error('CartAPI | Cart ID missing from DB | %s', cart_id)
                 cart = self._create_cart(cart_id=cart_id)
-        cart_info = _get_cart_items(cart.cart_id)
-        app_log.info('- CartAPI | GET | Cart INFO: %s', cart_info)
-        return Response(json.dumps(cart_info), mimetype='application/json', status=200)
+            cart_info = _get_cart_items(cart.cart_id)
+            LOG.debug('CartAPI | GET | Cart INFO: %s', cart_info)
+            resp = {"status": 200, "response": json.dumps(cart_info), "mimetype": "application/json"}
+        return Response(**resp)
 
+    @AUTH.login_required
     def post(self):
-        cart_id = session.get('CART_ID')
-        app_log.debug('- CartAPI | POST | Session Cart ID: %s', cart_id)
-        data = request.get_json()
-        product = get_item_from_db('product', query={"id": data['sku']})
-        cart = get_item_from_db('cart', {"cart_id": cart_id})
-        add_to_cart(product, data, cart)
-        cart_info = _get_cart_items(cart.cart_id)
-        app_log.info('- CartAPI | POST | Cart INFO: %s', cart_info)
-        return Response(json.dumps(cart_info), mimetype='application/json', status=200)
+        cart_id = request.headers.get('Cart-Id')
+        if not cart_id:
+            LOG.error('Cart-Id header not found')
+            resp = {"status": 400, "response": "Cart-Id not found"}
+        else:
+            data = request.get_json()
+            product = get_item_from_db('product', query={"id": data['sku']})
+            cart = get_item_from_db('cart', {"cart_id": cart_id})
+            add_to_cart(product, data, cart)
+            cart_info = _get_cart_items(cart.cart_id)
+            LOG.debug('POST | Cart data: %s', cart_info)
+            resp = {"status": 200, "response": json.dumps(cart_info), "mimetype": "application/json"}
+        return Response(**resp)
 
+    @AUTH.login_required
     def delete(self):
         """Delete an item from the cart"""
-        app_log.debug('- CartAPI | DELETE')
         cart_id = session.get('CART_ID')
+        if not cart_id:
+            cart_id = request.headers.get('Cart-Id')
+        LOG.debug('CartAPI | DELETE Cart ID | %s', cart_id)
         sku = request.get_json()['sku']
         product = get_item_from_db('product', query={"id": sku})
         query = {"product": product, "cart_id": cart_id}
@@ -119,18 +139,20 @@ class CartAPI(Resource):
         cart_info = _get_cart_items(cart_id)
         return Response(json.dumps(cart_info), mimetype='application/json', status=200)
 
-    def _create_cart(self, cart_id=None):
-        app_log.debug('- CartAPI | create_cart | cart_id: %s', cart_id)
-        if not cart_id:
-            cart_id = generate_cart_id()
+    def _create_cart(self, cart_id):
         session['CART_ID'] = cart_id
         data = {"cart_id": cart_id}
-        run_db_action(action='create', data=data, table='cart', query={"cart_id": cart_id})
         cart = get_item_from_db('cart', query={"cart_id": cart_id})
+        if not cart:
+            LOG.debug('CartAPI | Adding Cart ID to DB | %s', cart_id)
+            run_db_action(action='create', data=data, table='cart', query={"cart_id": cart_id})
+            cart = get_item_from_db('cart', query={"cart_id": cart_id})
+        else:
+            LOG.info('CartAPI | Cart ID already exists | %s', cart_id)
         return cart
 
     def _get_cart(self, cart_id):
-        app_log.debug(' - CartAPI | get_cart')
+        LOG.debug('CartAPI | _get_cart | %s', cart_id)
         cart = get_item_from_db('cart', query={"cart_id": cart_id})
         if not cart:
             cart = self._create_cart(cart_id=cart_id)
@@ -138,9 +160,11 @@ class CartAPI(Resource):
 
 
 class CheckoutAPI(Resource):
+    @AUTH.login_required
     def post(self):
         pass
 
+    @AUTH.login_required
     def get(self):
         args = ParamArgs(request.args)
         query = {"cart_id": args.cart_id}
@@ -148,22 +172,24 @@ class CheckoutAPI(Resource):
         cart_items = get_item_from_db('cart_item', query=query, multiple=True)
         for item in cart_items:
             if item.product:
-                app_log.info('item: %s', item.product.name)
+                LOG.debug('item: %s', item.product.name)
                 item_data = cart_item_to_dict(item)
                 cart_list.append(item_data)
             else:
-                app_log.debug('Item not present: %s', item)
+                LOG.debug('Item not present: %s', item)
         return Response(json.dumps(cart_list), mimetype='application/json', status=200)
 
+    @AUTH.login_required
     def delete(self):
         args = ParamArgs(request.args)
+        LOG.debug('Clearing cart %s', args)
         query = {"cart_id": args.cart_id}
         cart_items = get_item_from_db('cart_item', query=query, multiple=True)
         for item in cart_items:
             if item.product:
-                app_log.info('deleting item: %s', item.product.name)
+                LOG.debug('deleting item: %s', item.product.name)
                 run_db_action(action='delete', item=item, table='cart_item', query={"cart_id": args.cart_id})
             else:
-                app_log.debug('Item not present: %s', item)
+                LOG.debug('Item not present: %s', item)
         cart = _get_cart_items(args.cart_id)
         return Response(json.dumps(cart), mimetype='application/json', status=200)

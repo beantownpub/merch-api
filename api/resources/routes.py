@@ -3,6 +3,7 @@ from .product_categories import CategoriesAPI, CategoryAPI
 from .cart import CartAPI, CheckoutAPI
 from .orders import OrdersAPI, OrderAPI
 from .healthcheck import HealthCheckAPI
+from .merch import MerchAPI
 
 product_routes = [
     '/v1/merch/products/<category>',
@@ -19,3 +20,4 @@ def init_routes(api):
     api.add_resource(ProductAPI, '/v2/products')
     api.add_resource(CategoriesAPI, '/v1/categories')
     api.add_resource(CheckoutAPI, '/v2/cart/empty')
+    api.add_resource(MerchAPI, '/v2/merch')
