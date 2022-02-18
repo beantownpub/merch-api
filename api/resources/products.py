@@ -21,11 +21,9 @@ LOG = init_logger(log_level=LOG_LEVEL)
 @AUTH.verify_password
 def verify_password(username, password):
     api_pwd = os.environ.get("API_PASSWORD")
-    LOG.info("Verifying %s", username)
     if password.strip() == api_pwd:
         verified = True
     else:
-        LOG.info('Access Denied')
         verified = False
     return verified
 
@@ -33,7 +31,7 @@ def verify_password(username, password):
 def get_product(name):
     product = get_item_from_db('product', {"name": name})
     if product:
-        LOG.info('get_product Found %s', name)
+        LOG.debug('get_product Found %s', name)
         LOG.debug('Prod: %s', dir(product))
         product_data = product_to_dict(product)
         return product_data
@@ -83,11 +81,11 @@ def get_active_products_by_category(category):
         # products = Product.query.filter(Category.name == category).all()
         product_list = []
         products = Product.query.filter(Product.category.has(name=category)).all()
-        LOG.info('PRODUCTS: %s', products)
+        LOG.debug('PRODUCTS: %s', products)
         if products:
             for product in products:
                 product_list.append(product_to_dict(product))
-        LOG.info(products[0].category)
+        LOG.debug(products[0].category)
         return product_list
 
 
@@ -172,7 +170,7 @@ class ProductAPI(Resource):
 
     def delete(self):
         body = request.get_json()
-        LOG.info('DELETING %s', body['name'])
+        LOG.debug('DELETING %s', body['name'])
         delete_product(body['name'])
         product = get_product(body['name'])
         if product:

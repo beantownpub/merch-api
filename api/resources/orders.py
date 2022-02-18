@@ -27,19 +27,17 @@ class OrdersAPIException(Exception):
 
 @AUTH.verify_password
 def verify_password(username, password):
-    LOG.info('Verifying user | %s', username)
     api_pwd = os.environ.get("API_PASSWORD")
     if password.strip() == api_pwd:
         verified = True
     else:
-        LOG.info('Access Denied - %s', username)
         verified = False
     return verified
 
 
 def clear_cart(cart_items, cart_id):
     for cart_item in cart_items:
-        LOG.info('Deleting Cart Item %s', cart_item['name'])
+        LOG.debug('Deleting Cart Item %s', cart_item['name'])
         sku = cart_item['sku']
         product = Product.objects(sku=int(sku)).first()
         item = CartItem.objects(item=product, cart_id=cart_id).first()
@@ -231,7 +229,7 @@ class OrderAPI(Resource):
     def _get_cart_items(self, cart_id):
         LOG.debug('OrderAPI | _get_cart_items | cart_id: %s', cart_id)
         cart = get_item_from_db('cart', query={"cart_id": cart_id})
-        LOG.info('Cart Items debug: %s', cart.items)
+        LOG.debug('Cart Items debug: %s', cart.items)
         query = {"cart_id": cart.cart_id}
         cart_items = get_item_from_db('cart_item', query=query, multiple=True)
         return cart_items

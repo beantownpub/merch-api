@@ -1,4 +1,3 @@
-import logging
 import os
 
 from api.database.models import Cart, CartItem, Category, Customer, Inventory, Product, Order
@@ -6,7 +5,7 @@ from api.database.db import DB
 from api.libs.logging import init_logger
 
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
-LOG = init_logger(log_level=LOG_LEVEL)
+LOG = init_logger(LOG_LEVEL)
 class MerchDBException(Exception):
     """Base class for menu database exceptions"""
 
@@ -45,20 +44,10 @@ def _db_write(table_name, data, query=None):
     DB.session.add(item)
 
 
-def _delete_cart_association(cart_item):
-    LOG.debug('Cart DIR: %s', dir(cart_item.cart))
-    #query = {"cart_item_id": cart_item.id, "cart_id": cart_item.cart_id}
-    # cart_association = get_item_from_db('cart_association', query=query)
-    # LOG.info('Deleting DB association: %s', cart_association)
-    cart_item.cart.clear()
-    # DB.session.expire(cart_association)
-    # DB.session.commit()
-
-
 def get_item_from_db(table_name, query=None, multiple=False):
     table = TABLES.get(table_name)
-    # LOG.info('Table DIR: %s', dir(table))
-    LOG.info('DB table: %s | Query: %s', table_name, query)
+    # LOG.debug('Table DIR: %s', dir(table))
+    LOG.debug('DB table: %s | Query: %s', table_name, query)
     if not table:
         raise MerchDBException(f"DB Table {table_name} not found")
     if not multiple:
@@ -69,14 +58,13 @@ def get_item_from_db(table_name, query=None, multiple=False):
 
 
 def run_db_action(action, item=None, data=None, table=None, query=None):
-    LOG.info('Action: %s | Table: %s | Data: %s', action, table, data)
+    LOG.debug('Action: %s | Table: %s | Data: %s', action, table, data)
     if action == "create":
         _db_write(data=data, table_name=table, query=query)
     elif action == "update":
         _db_update(item=item, table_name=table, data=data)
     elif action == "delete":
         if table == 'cart_item':
-            # _delete_cart_association(cart_item=item)
             item.cart = None
         DB.session.delete(item)
     else:

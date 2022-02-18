@@ -16,12 +16,10 @@ LOG = init_logger(log_level=LOG_LEVEL)
 
 @AUTH.verify_password
 def verify_password(username, password):
-    LOG.info('Verifying user | %s', username)
     api_pwd = os.environ.get("API_PASSWORD")
     if password.strip() == api_pwd:
         verified = True
     else:
-        LOG.info('Access Denied - %s', username)
         verified = False
     return verified
 
@@ -42,10 +40,7 @@ class MerchAPI(Resource):
     def get(self):
         category_list = []
         categories = _get_categories()
-        if not categories:
-            LOG.error('Cart-Id header not found')
-            resp = {"status": 400, "response": "Cart-Id not found"}
-        else:
+        if categories:
             for category in categories:
                 product_list = []
                 products = _get_products_by_category(category.name)
@@ -55,5 +50,5 @@ class MerchAPI(Resource):
                     category['products'] = product_list
                 category_list.append(category)
             # LOG.debug('MerchAPI | GET | Categories INFO: %s', category_list)
-            resp = {"status": 200, "response": json.dumps(category_list), "mimetype": "application/json"}
+        resp = {"status": 200, "response": json.dumps(category_list), "mimetype": "application/json"}
         return Response(**resp)

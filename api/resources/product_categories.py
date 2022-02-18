@@ -149,7 +149,7 @@ class CategoriesAPI(Resource):
 
 class CategoryAPI(Resource):
     def post(self, category):
-        LOG.info('Creating category %s', category)
+        LOG.debug('Creating category %s', category)
         category = create_category(request)
         if category:
             return Response(status=201)
@@ -157,7 +157,7 @@ class CategoryAPI(Resource):
             return Response(status=500)
 
     def delete(self, category):
-        LOG.info('DELETING %s', category)
+        LOG.debug('DELETING %s', category)
         delete_category(category)
         category = get_category(category)
         if category:
@@ -175,7 +175,7 @@ class CategoryAPI(Resource):
             return Response(status=404)
 
     def put(self, category):
-        LOG.info('Updating category %s', category)
+        LOG.debug('Updating category %s', category)
         category = update_category(category, request)
         if category:
             return Response(status=204)

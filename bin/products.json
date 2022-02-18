@@ -197,7 +197,7 @@
                 {
                     "name": "Poncho",
                     "description": "Beantown Pub Rain Poncho",
-                    "price": 4.99,
+                    "price": 1.00,
                     "sku": 500,
                     "one_size": true,
                     "sizes": false,

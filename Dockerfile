@@ -3,7 +3,7 @@ FROM python:3.8-slim-buster
 ENV TINI_VERSION=v0.19.0
 
 RUN apt-get update -y && \
-    apt-get install -y postgresql libpq-dev gcc && \
+    apt-get install -y postgresql libpq-dev gcc redis && \
     pip install -U pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
