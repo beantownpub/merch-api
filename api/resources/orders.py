@@ -195,28 +195,6 @@ class OrderAPI(Resource):
         }
         return Response(json.dumps(order_data), mimetype='application/json', status=200)
 
-    def post(self, order):
-        order_id = session.get('CART_ID')
-        LOG.debug('- OrderAPI | POST | Session ORDER ID: %s', order_id)
-        cart = get_item_from_db('cart', {"cart_id": order_id})
-        if not cart:
-            raise OrdersAPIException(f"Cannot complete order. Cart {order_id} not found.")
-        cart_items = self._get_cart_items(order_id)
-        for item in cart.items:
-            logging.info('OrdersAPI | Cart item: %s', item)
-            logging.info('OrdersAPI | Cart item dir: %s', dir(item))
-        add_to_order(product, data, cart)
-        data = request.get_json()
-        logging.info('Order data: %s', data)
-        customer = create_customer(data)
-        order = create_order(data, customer)
-        logging.info('Order created: %s', order)
-        order_data = {
-            'order_items': order.order_items,
-            'order_id': order.id
-        }
-        return Response(json.dumps(order_data), mimetype='application/json', status=200)
-
     def put(self, _id):
         body = request.get_json()
         Order.objects.get(id=_id).update(**body)

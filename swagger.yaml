@@ -1,22 +1,19 @@
 openapi: 3.0.0
 info:
-  version: 0.1.1
+  version: 0.1.2
   title: Merch API
   description: An API for interacting with merchandise
 
 servers:
-  - url: http://merch-api/v1
+  - url: http://merch-api/v2
 
 security:
   - BasicAuth: []
 
 paths:
-  /merch/products/{category}:
+  /merch:
     get:
       description: Returns a list products from a category
-      parameters:
-        - $ref: '#/components/parameters/PageLimit'
-        - $ref: '#/components/parameters/PageOffset'
       responses:
         '200':
           description: Successfully returned a list of messages
