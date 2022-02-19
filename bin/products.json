@@ -70,7 +70,7 @@
         {
             "name": "hats",
             "is_active": true,
-            "has_sizes": true,
+            "has_sizes": false,
             "items": [
                 {
                     "name": "Scripted Snapback Hat",
@@ -113,7 +113,7 @@
         {
             "name": "drinkware",
             "is_active": true,
-            "has_sizes": true,
+            "has_sizes": false,
             "items": [
                 {
                     "name": "16oz Mug",
@@ -192,10 +192,22 @@
         {
             "name": "accessories",
             "is_active": true,
-            "has_sizes": true,
+            "has_sizes": false,
             "items": [
                 {
                     "name": "Poncho",
+                    "description": "Beantown Pub Rain Poncho",
+                    "price": 4.99,
+                    "sku": 500,
+                    "one_size": true,
+                    "sizes": false,
+                    "category": "accessories",
+                    "image_path": "/img/merch",
+                    "image_name": "poncho.jpg",
+                    "is_active": true
+                },
+                {
+                    "name": "Test Item",
                     "description": "Beantown Pub Rain Poncho",
                     "price": 1.00,
                     "sku": 500,
@@ -204,7 +216,7 @@
                     "category": "accessories",
                     "image_path": "/img/merch",
                     "image_name": "poncho.jpg",
-                    "is_active": true
+                    "is_active": false
                 },
                 {
                     "name": "Umbrella",

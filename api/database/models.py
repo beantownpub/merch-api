@@ -34,6 +34,7 @@ class Product(DB.Model):
     description = DB.Column(DB.String)
     creation_date = DB.Column(DB.DateTime, default=datetime.utcnow)
     is_active = DB.Column(DB.Boolean)
+    # has_sizes = DB.Column(DB.Boolean)
     price = DB.Column(DB.Float)
     image_name = DB.Column(DB.String)
     image_path = DB.Column(DB.String)
