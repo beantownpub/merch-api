@@ -127,9 +127,7 @@ workflows:
   version: 2
   contact_api:
     jobs:
-      - build_and_publish:
-          requires:
-            - run_tests
+      - build_and_publish
       - deploy:
           requires:
             - build_and_publish
