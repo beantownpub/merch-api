@@ -125,7 +125,7 @@ jobs:
 
 workflows:
   version: 2
-  contact_api:
+  merch_api_build_and_deploy:
     jobs:
       - build_and_publish
       - deploy:
