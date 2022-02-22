@@ -86,15 +86,15 @@ jobs:
           name: Build Image
           command: |
             export MERCH_API_VERSION=$(yq eval '.info.version' swagger.yaml)
-            docker build -t contact_api:$MERCH_API_VERSION .
+            docker build -t merch_api:$MERCH_API_VERSION .
       - check_tags
       - run:
           name: Publish Image
           command: |
             export MERCH_API_VERSION=$(yq eval '.info.version' swagger.yaml)
             echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
-            docker tag contact_api:$MERCH_API_VERSION $DOCKER_USERNAME/contact_api:$MERCH_API_VERSION
-            docker push $DOCKER_USERNAME/contact_api:$MERCH_API_VERSION
+            docker tag merch_api:$MERCH_API_VERSION $DOCKER_USERNAME/merch_api:$MERCH_API_VERSION
+            docker push $DOCKER_USERNAME/merch_api:$MERCH_API_VERSION
 
   deploy:
     circleci_ip_ranges: true
@@ -111,11 +111,11 @@ jobs:
             kubectl config get-contexts
             kubectl get pods -n prod
       - run:
-          name: Deploy contact-api
+          name: Deploy merch-api
           command: |
             export MERCH_API_VERSION=$(yq eval '.info.version' swagger.yaml)
             helm repo update
-            helm upgrade --install contact-api beantown/contact-api \
+            helm upgrade --install merch-api beantown/merch-api \
               --namespace prod \
               --set global.env=prod \
               --set image.tag=$MERCH_API_VERSION \
