@@ -49,6 +49,7 @@ def post_item(product, url):
     if r.status_code in range(200,300):
         print("Ok Status: %s", r.status_code)
     else:
+        print("POST Error Status: %s", r.status_code)
         raise SeedMerchException(r.content)
 
 
@@ -57,6 +58,7 @@ def post_category(category, url):
     if r.status_code in range(200,300):
         print("Ok Status: %s", r.status_code)
     else:
+        print("POST Error Status: %s\nURL: %s", r.status_code, url)
         raise SeedMerchException(r.content)
 
 
@@ -89,10 +91,12 @@ if __name__ == '__main__':
     print(__file__)
     args = parse_args()
     env = args.env
+    url = get_url(env)
+    print(f"URL: {url}")
     products = get_products()
     categories = products['categories']
     for category in categories:
         create_category(category, env)
         items = category['items']
         for i in items:
-            post_item(i, get_url(env))
+            post_item(i, url)

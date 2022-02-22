@@ -1,7 +1,7 @@
 .PHONY: all test clean
 
 name ?= merch-api
-image ?= $(name)
+image ?= merch_api
 port ?= 5000
 repo ?= jalgraves
 tag ?= $(shell yq eval '.info.version' swagger.yaml)
