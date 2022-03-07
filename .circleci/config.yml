@@ -6,6 +6,7 @@ executors:
     environment:
       DOCKER_BUILDKIT: 1
       BUILDX_PLATFORMS: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
+    resource_class: large
   debian:
     docker:
     - image: python:3.7-slim-buster
@@ -125,7 +126,7 @@ jobs:
               --set db_pass=$DB_PASS \
               --set db_port=$DB_PORT \
               --set db_user=$DB_USER \
-              --set db_name=$MERCH_DB_NAME \
+              --set db_name=$DB_NAME \
               --set frontend_origin_url=$FRONTEND_ORIGIN_URL \
               --set logLevel=INFO \
               --debug
