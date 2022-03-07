@@ -4,32 +4,13 @@ from .db import DB
 from sqlalchemy.dialects.postgresql import JSON
 
 
-customer_association = DB.Table('customer_association', DB.Model.metadata,
-    DB.Column('customer_id', DB.Integer, DB.ForeignKey('customers.id')),
-    DB.Column('order_id', DB.Integer, DB.ForeignKey('orders.id'))
-)
 
-order_association = DB.Table('order_association', DB.Model.metadata,
-    DB.Column('order_item_id', DB.Integer, DB.ForeignKey('order_item.id')),
-    DB.Column('order_id', DB.Integer, DB.ForeignKey('orders.id'))
-)
-
-product_association = DB.Table('product_association', DB.Model.metadata,
-    DB.Column('product_id', DB.Integer, DB.ForeignKey('product.id')),
-    DB.Column('cart_item_id', DB.Integer, DB.ForeignKey('cart_item.id')),
-    DB.Column('order_item_id', DB.Integer, DB.ForeignKey('order_item.id'))
-)
-
-product_orders = DB.Table('product_orders', DB.Model.metadata,
-    DB.Column('product_id', DB.Integer, DB.ForeignKey('product.id')),
-    DB.Column('order_id', DB.Integer, DB.ForeignKey('orders.id'))
-)
 
 
 class Product(DB.Model):
     __tablename__ = 'product'
     id = DB.Column(DB.Integer, unique=True, primary_key=True)
-    name = DB.Column(DB.String(50), unique=True)
+    name = DB.Column(DB.String(50))
     sku = DB.Column(DB.Integer, unique=True)
     description = DB.Column(DB.String)
     creation_date = DB.Column(DB.DateTime, default=datetime.utcnow)
@@ -38,20 +19,24 @@ class Product(DB.Model):
     price = DB.Column(DB.Float)
     image_name = DB.Column(DB.String)
     image_path = DB.Column(DB.String)
-    category_id = DB.Column(DB.String, DB.ForeignKey('category.name'), nullable=False)
-    inventory_id = DB.Column(DB.String, DB.ForeignKey('inventory.name'), nullable=False)
-    #slug = DB.Column(DB.String(50))
-    #uuid = DB.Column(DB.String, unique=True)
+    # category_id = DB.Column(DB.String, DB.ForeignKey('category.name'), nullable=False)
+    category_id = DB.Column(DB.String, DB.ForeignKey('category.uuid'), nullable=False)
+    inventory_id = DB.Column(DB.Integer, DB.ForeignKey('inventory.id'), nullable=False)
+    location = DB.Column(DB.String)
+    slug = DB.Column(DB.String(50))
+    uuid = DB.Column(DB.String, unique=True)
     cart = DB.relationship('CartItem', backref='product', lazy=True)
 
 
 class Category(DB.Model):
     __tablename__ = 'category'
     id = DB.Column(DB.Integer, autoincrement=True, primary_key=True, unique=True)
-    name = DB.Column(DB.String(50), unique=True)
+    name = DB.Column(DB.String(50))
     is_active = DB.Column(DB.Boolean)
     has_sizes = DB.Column(DB.Boolean)
+    location = DB.Column(DB.String)
     products = DB.relationship('Product', backref='category', lazy=True)
+    uuid = DB.Column(DB.String, unique=True)
 
     def __repr__(self):
         return '<Category %r>' % self.name
@@ -60,7 +45,7 @@ class Category(DB.Model):
 class Inventory(DB.Model):
     __tablename__ = 'inventory'
     id = DB.Column(DB.Integer, autoincrement=True, primary_key=True, unique=True)
-    name = DB.Column(DB.String(50), unique=True)
+    name = DB.Column(DB.String(50), unique=False)
     small = DB.Column(DB.Integer, default=0)
     medium = DB.Column(DB.Integer, default=0)
     large = DB.Column(DB.Integer, default=0)
@@ -68,6 +53,7 @@ class Inventory(DB.Model):
     xxl = DB.Column(DB.Integer, default=0)
     quantity = DB.Column(DB.Integer, default=0)
     has_sizes = DB.Column(DB.Boolean, default=False)
+    location = DB.Column(DB.String)
     product = DB.relationship('Product', backref='inventory', lazy=True, uselist=False)
 
     @property
@@ -87,7 +73,7 @@ class CartItem(DB.Model):
     time_added = DB.Column(DB.DateTime, default=datetime.utcnow)
     cart_id = DB.Column(DB.String, DB.ForeignKey('cart.cart_id'), nullable=False)
     size = DB.Column(DB.String, unique=False)
-    product_id = DB.Column(DB.String, DB.ForeignKey('product.name'), nullable=False)
+    product_id = DB.Column(DB.String, DB.ForeignKey('product.uuid'), nullable=False)
 
 
 class Cart(DB.Model):
@@ -119,17 +105,6 @@ class Customer(DB.Model):
     phone_number = DB.Column(DB.String(15))
     address = DB.Column(DB.Integer, DB.ForeignKey('address.id'), nullable=False)
     orders = DB.Column(JSON, default=[])
-
-
-class OrderItem(DB.Model):
-    __tablename__ = 'order_item'
-
-    id = DB.Column(DB.Integer, autoincrement=True, primary_key=True, unique=True)
-    item_count = DB.Column(DB.Integer, default=1)
-    time_added = DB.Column(DB.DateTime, default=datetime.utcnow)
-    cart_id = DB.Column(DB.String, unique=False)
-    product = DB.relationship('Product', backref='order_item', secondary=product_association, uselist=False)
-    order = DB.relationship('Order', backref='order', secondary=order_association, sync_backref=False, viewonly=True, uselist=False)
 
 
 class Order(DB.Model):

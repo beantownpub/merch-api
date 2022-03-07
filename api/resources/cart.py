@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Response, request, session
+from flask import Response, request
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
@@ -26,11 +26,11 @@ def verify_password(username, password):
 def add_to_cart(product, data, cart):
     LOG.debug('Adding to cart | %s | %s', product, data)
     item = {
-        "product_id": product.name,
+        "product_id": product.uuid,
         "item_count": data['quantity'],
         "cart_id": cart.cart_id
     }
-    category = get_item_from_db('category', query={"name": product.category_id})
+    category = get_item_from_db('category', query={"uuid": product.category_id})
     LOG.debug('Cart product category | %s', category.name)
     LOG.debug('Category sizes | %s', category.has_sizes)
     if category.has_sizes:
@@ -91,7 +91,7 @@ def _calculate_cart_total(cart):
 class CartAPI(Resource):
     @AUTH.login_required
     def get(self):
-        LOG.debug('Session Items: %s', session.items())
+        # LOG.debug('Session Items: %s', session.items())
         # LOG.info('Headers: %s', request.headers)
         LOG.debug('CartAPI | GET Cart-Id | %s', request.headers.get('Cart-Id'))
         cart_id = request.headers.get('Cart-Id')
@@ -127,9 +127,8 @@ class CartAPI(Resource):
     @AUTH.login_required
     def delete(self):
         """Delete an item from the cart"""
-        cart_id = session.get('CART_ID')
-        if not cart_id:
-            cart_id = request.headers.get('Cart-Id')
+        # cart_id = session.get('CART_ID')
+        cart_id = request.headers.get('Cart-Id')
         LOG.debug('CartAPI | DELETE Cart ID | %s', cart_id)
         sku = request.get_json()['sku']
         product = get_item_from_db('product', query={"id": sku})
@@ -140,7 +139,7 @@ class CartAPI(Resource):
         return Response(json.dumps(cart_info), mimetype='application/json', status=200)
 
     def _create_cart(self, cart_id):
-        session['CART_ID'] = cart_id
+        # session['CART_ID'] = cart_id
         data = {"cart_id": cart_id}
         cart = get_item_from_db('cart', query={"cart_id": cart_id})
         if not cart:

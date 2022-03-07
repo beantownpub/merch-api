@@ -10,6 +10,7 @@ from api.database.models import Product, Category, Inventory
 from api.database.db import DB
 from api.libs.db_utils import run_db_action, get_item_from_db
 from api.libs.logging import init_logger
+from api.libs.utils import db_item_to_dict, get_product_by_slug, make_slug, make_uuid, ParamArgs
 
 AUTH = HTTPBasicAuth()
 
@@ -27,13 +28,21 @@ def verify_password(username, password):
         verified = False
     return verified
 
-
-def get_product(name):
-    product = get_item_from_db('product', {"name": name})
+def get_product_by_sku(sku):
+    product = Product.query.filter_by(sku=int(sku)).first()
     if product:
-        LOG.debug('get_product Found %s', name)
-        LOG.debug('Prod: %s', dir(product))
-        product_data = product_to_dict(product)
+        LOG.debug('get_product Found %s', id)
+        product_data = db_item_to_dict(product)
+        return product_data
+
+
+def get_product(name, location):
+    LOG.debug('GET | name: %s | location: %s', name, location)
+    # product = get_item_from_db('product', {"name": name, "location": location})
+    product = Product.query.filter_by(name=name, location=location).first()
+    if product:
+        LOG.debug('Found %s', name)
+        product_data = db_item_to_dict(product)
         return product_data
 
 
@@ -41,39 +50,6 @@ def check_category_status(category):
     category = get_item_from_db('category', {"name": category})
     if category:
         return category.is_active
-
-
-def product_to_dict(product):
-    inventory = inventory_to_dict(product.inventory)
-    product_dict = {
-        'name': product.name,
-        'sku': product.id,
-        'has_sizes': product.category.has_sizes,
-        'sizes': product.category.has_sizes,
-        'category': product.category.name,
-        'description': product.description,
-        'price': product.price,
-        'image_name': product.image_name,
-        'image_path': product.image_path,
-        'inventory': inventory
-    }
-    return product_dict
-
-
-def inventory_to_dict(inventory):
-    if inventory.has_sizes:
-        inventory_dict = {
-            'small': inventory.small,
-            'medium': inventory.medium,
-            'large': inventory.large,
-            'xl': inventory.xl,
-            'xxl': inventory.xxl
-        }
-    else:
-        inventory_dict = {}
-    inventory_dict['has_sizes'] = inventory.has_sizes
-    inventory_dict['total'] = inventory.total
-    return inventory_dict
 
 
 def get_active_products_by_category(category):
@@ -84,71 +60,70 @@ def get_active_products_by_category(category):
         LOG.debug('PRODUCTS: %s', products)
         if products:
             for product in products:
-                product_list.append(product_to_dict(product))
+                product_list.append(db_item_to_dict(product))
         LOG.debug(products[0].category)
         return product_list
 
 
-def get_category(name):
-    category = get_item_from_db('category', {"name": name})
-    if category:
-        info = {
-            'id': category.name
-        }
-        return info
 
-
-def get_all_categories():
-    categories = Category.query.filter_by().all()
-    if categories:
-        LOG.info('CATEGORIES: %s', categories)
-        return categories
 
 
 def create_product(request):
     body = request.get_json()
-    name = body['name']
-    sku = body['sku']
-    description = body['description']
-    # category = body['category']
-    is_active = body['is_active']
-    price = body['price']
-    if not get_product(name):
-        category = Category.query.filter_by(name=body['category']).first()
+    slug = make_slug(body['name'])
+    name = body['name'].lower()
+    if not get_product_by_slug(slug, body['location']):
+        LOG.info('Creating product %s', slug)
+        category = Category.query.filter_by(name=body['category'], location=body['location']).first()
         inventory = Inventory(name=name, has_sizes=category.has_sizes)
         DB.session.add(inventory)
         DB.session.commit()
         product = Product(
             name=name,
-            is_active=is_active,
-            category_id=category.name,
-            inventory_id=inventory.name,
-            description=description,
-            price=price,
-            sku=sku,
+            is_active=body['is_active'],
+            category_id=category.uuid,
+            inventory_id=inventory.id,
+            description=body['description'],
+            price=body['price'],
+            sku=body['sku'],
+            location=body['location'],
             image_name=body['image_name'],
-            image_path=body['image_path']
+            image_path=body['image_path'],
+            uuid=make_uuid(),
+            slug=slug
         )
         DB.session.add(product)
         DB.session.commit()
-    product = get_product(name)
+    product = get_product(name, body['location'])
     if product:
         return product
 
 
-def delete_product(product_name):
-    product = Product.query.filter_by(name=product_name).first()
-    if product:
-        DB.session.delete(product)
-        DB.session.commit()
+def delete_product(product):
+    DB.session.delete(product)
+    DB.session.commit()
 
 
-def update_product(product_name):
-    product = Product.query.filter_by(name=product_name).first()
+def update_product(request):
+    body = request.get_json()
+    slug = make_slug(body['name'])
+    product = get_product_by_slug(slug, body['location'])
     if product:
+        category = Category.query.filter_by(name=body['category'], location=body['location']).first()
         product.price = 88.88
+        product.name = body['name'].lower()
+        product.is_active = body['is_active']
+        product.category_id = category.uuid
+        product.description = body['description']
+        product.price = body['price']
+        product.sku = body['sku']
+        product.location = body['location']
+        product.image_name = body['image_name']
+        product.image_path = body['image_path']
+        product.slug = slug
         DB.session.add(product)
         DB.session.commit()
+        return product
 
 
 class ProductAPI(Resource):
@@ -160,30 +135,29 @@ class ProductAPI(Resource):
             return Response(status=500)
 
     def get(self):
-        body = request.get_json()
-        name = body['name']
-        product = get_product(name)
+        args = ParamArgs(request.args)
+        product = get_product_by_sku(args.sku)
         if product:
-            return Response(status=200)
+            return Response(json.dumps(product), mimetype='application/json', status=200)
         else:
             return Response(status=404)
 
     def delete(self):
-        body = request.get_json()
-        LOG.debug('DELETING %s', body['name'])
-        delete_product(body['name'])
-        product = get_product(body['name'])
-        if product:
-            return Response(status=500)
+        args = ParamArgs(request.args)
+        LOG.debug('DELETING %s', args.sku)
+        product = Product.query.filter_by(sku=args.sku).first()
+        if not product:
+            return Response(status=404)
         else:
+            delete_product(product)
             return Response(status=204)
 
     def put(self):
-        body = request.get_json()
-        name = body['name']
-        product = update_product(name)
+        LOG.info('UPDATING %s', request.get_json())
+        product = update_product(request)
         if product:
-            return Response(status=200)
+            product = db_item_to_dict(product)
+            return Response(json.dumps(product), status=200)
         else:
             return Response(status=404)
 

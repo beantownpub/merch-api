@@ -8,58 +8,16 @@ from flask_restful import Resource
 from api.database.models import Category, Product
 from api.database.db import DB
 from api.libs.logging import init_logger
+from api.libs.utils import db_item_to_dict, make_uuid, ParamArgs
 
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
 LOG = init_logger(log_level=LOG_LEVEL)
 
 
-
-def product_to_dict(product):
-    inventory = inventory_to_dict(product.inventory)
-    product_dict = {
-        'name': product.name,
-        'sku': product.id,
-        'has_sizes': product.category.has_sizes,
-        'category': product.category.name,
-        'description': product.description,
-        'price': product.price,
-        'image_name': product.image_name,
-        'image_path': product.image_path,
-        'inventory': inventory
-    }
-    return product_dict
-
-
-def category_to_dict(category):
-    category_dict = {
-        'name': category.name,
-        'is_active': category.is_active,
-        'has_sizes': category.has_sizes,
-        'id': category.id
-    }
-    return category_dict
-
-
-def inventory_to_dict(inventory):
-    if inventory.has_sizes:
-        inventory_dict = {
-            'small': inventory.small,
-            'medium': inventory.medium,
-            'large': inventory.large,
-            'xl': inventory.xl,
-            'xxl': inventory.xxl
-        }
-    else:
-        inventory_dict = {}
-    inventory_dict['has_sizes'] = inventory.has_sizes
-    inventory_dict['total'] = inventory.total
-    return inventory_dict
-
-
-def get_category(name):
-    category = Category.query.filter_by(name=name).first()
+def get_category(name, location):
+    category = Category.query.filter_by(name=name, location=location).first()
     if category:
-        return category_to_dict(category)
+        return db_item_to_dict(category)
 
 
 def update_category(name, request):
@@ -98,7 +56,7 @@ def get_categories_and_products():
             if products:
                 LOG.info('Products: %s', products)
                 for product in products:
-                    product_list.append(product_to_dict(product))
+                    product_list.append(db_item_to_dict(product))
             cat['products'] = product_list
             category_list.append(cat)
     return category_list
@@ -111,7 +69,7 @@ def get_products(category):
     if products:
         LOG.debug('Products: %s', products)
         for product in products:
-            product_list.append(product_to_dict(product))
+            product_list.append(db_item_to_dict(product))
     return product_list
 
 
@@ -121,11 +79,18 @@ def create_category(request):
     name = body['name']
     is_active = body['is_active']
     has_sizes = body['has_sizes']
-    if not get_category(name):
-        category = Category(name=name, is_active=is_active, has_sizes=has_sizes)
+    location = body['location']
+    if not get_category(name, location):
+        category = Category(
+            name=name.lower(),
+            is_active=is_active,
+            has_sizes=has_sizes,
+            location=location,
+            uuid=make_uuid()
+        )
         DB.session.add(category)
         DB.session.commit()
-    category = get_category(name)
+    category = get_category(name, location)
     if category:
         return category
 
@@ -148,15 +113,20 @@ class CategoriesAPI(Resource):
 
 
 class CategoryAPI(Resource):
-    def post(self, category):
-        LOG.debug('Creating category %s', category)
+    def post(self):
+        LOG.debug('Creating category %s', request.get_json())
+        body = request.get_json()
+        category = get_category(body['name'], body['location'])
+        if category:
+            resp = {"status": 200, "response": "Category already exists"}
+            return Response(**resp)
         category = create_category(request)
         if category:
             return Response(status=201)
         else:
             return Response(status=500)
 
-    def delete(self, category):
+    def delete(self):
         LOG.debug('DELETING %s', category)
         delete_category(category)
         category = get_category(category)
@@ -165,12 +135,13 @@ class CategoryAPI(Resource):
         else:
             return Response(status=204)
 
-    def get(self, category):
-        LOG.debug('GET Category: %s', category)
-        category = get_category(category)
+    def get(self):
+        args = ParamArgs(request.args)
+        LOG.info('GET Category: %s', args)
+        category = get_category(args.name, args.location)
         if category:
-            products = json.dumps(get_products(category))
-            return Response(products, mimetype='application/json', status=200)
+            category = json.dumps(category)
+            return Response(category, mimetype='application/json', status=200)
         else:
             return Response(status=404)
 

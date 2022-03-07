@@ -3,7 +3,7 @@ import json
 import os
 import sys
 
-from requests import delete, post, put
+from requests import delete, get, post, put
 from requests.auth import HTTPBasicAuth
 
 class SeedMerchException(Exception):
@@ -23,6 +23,11 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--env", **env)
     return parser.parse_args()
+
+
+def check_if_product_exists(url, sku):
+    r = get(f"{url}?sku={sku}", headers=HEADERS, auth=AUTH)
+    return r.status_code
 
 
 def get_url(environment):
@@ -45,7 +50,11 @@ def get_products():
 
 def post_item(product, url):
     url = f"{url}/v2/products"
-    r = post(url, json=product, headers=HEADERS, auth=AUTH)
+    print("Product: {}\nSku: {}".format(product["name"], product["sku"]))
+    if check_if_product_exists(url, product['sku']) != 200:
+        r = post(url, json=product, headers=HEADERS, auth=AUTH)
+    else:
+        r = put(url, json=product, headers=HEADERS, auth=AUTH)
     if r.status_code in range(200,300):
         print("Ok Status: %s", r.status_code)
     else:
@@ -66,9 +75,10 @@ def create_category(category, environment):
     data = {
         "name": category["name"],
         "is_active": category["is_active"],
-        "has_sizes": category["has_sizes"]
+        "has_sizes": category["has_sizes"],
+        "location": category["location"]
     }
-    url = f'{get_url(environment)}/v1/merch/products/{category["name"]}'
+    url = f'{get_url(environment)}/v2/categories'
     post_category(data, url)
 
 

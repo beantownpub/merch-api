@@ -6,8 +6,9 @@ from .healthcheck import HealthCheckAPI
 from .merch import MerchAPI
 
 product_routes = [
-    '/v1/merch/products/<category>',
-    '/v1/merch/categories/<category>'
+    '/v1/merch/products',
+    '/v1/merch/categories',
+    '/v2/categories'
 ]
 
 def init_routes(api):

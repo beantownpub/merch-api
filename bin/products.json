@@ -4,17 +4,19 @@
             "name": "tshirts",
             "is_active": true,
             "has_sizes": true,
+            "location": "beantown",
             "items": [
                 {
                     "name": "Motto Shirt",
-                    "description": "Shirt with Beantown Slogan",
+                    "description": "Shirt with Beantown's Slogan",
                     "price": 23.99,
-                    "sku": 100,
+                    "sku": 101,
                     "one_size": false,
                     "sizes": true,
                     "category": "tshirts",
                     "image_path": "/img/merch",
                     "image_name": "motto_shirt.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -27,7 +29,8 @@
                     "category": "tshirts",
                     "image_path": "/img/merch",
                     "image_name": "scripted_logo_shirt.jpg",
-                    "is_active": true
+                    "location": "beantown",
+                    "is_active": false
                 },
                 {
                     "name": "Entering Beantown",
@@ -39,7 +42,8 @@
                     "category": "tshirts",
                     "image_path": "/img/merch",
                     "image_name": "entering_btown.jpg",
-                    "is_active": true
+                    "location": "beantown",
+                    "is_active": false
                 },
                 {
                     "name": "Guiness Shirt",
@@ -51,6 +55,7 @@
                     "category": "tshirts",
                     "image_path": "/img/merch",
                     "image_name": "guiness_shirt.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -63,7 +68,8 @@
                     "category": "tshirts",
                     "image_path": "/img/merch",
                     "image_name": "sam_adams_oyster.jpg",
-                    "is_active": true
+                    "location": "beantown",
+                    "is_active": false
                 }
             ]
         },
@@ -71,6 +77,7 @@
             "name": "hats",
             "is_active": true,
             "has_sizes": false,
+            "location": "beantown",
             "items": [
                 {
                     "name": "Scripted Snapback Hat",
@@ -82,6 +89,7 @@
                     "category": "hats",
                     "image_path": "/img/merch",
                     "image_name": "script_hat.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -94,6 +102,7 @@
                     "category": "hats",
                     "image_path": "/img/merch",
                     "image_name": "leather_strap_hat.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -106,6 +115,7 @@
                     "category": "hats",
                     "image_path": "/img/merch",
                     "image_name": "btown_usa_hat.jpg",
+                    "location": "beantown",
                     "is_active": true
                 }
             ]
@@ -114,6 +124,7 @@
             "name": "drinkware",
             "is_active": true,
             "has_sizes": false,
+            "location": "beantown",
             "items": [
                 {
                     "name": "16oz Mug",
@@ -125,6 +136,7 @@
                     "category": "drinkware",
                     "image_path": "/img/merch",
                     "image_name": "mug.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -137,6 +149,7 @@
                     "category": "drinkware",
                     "image_path": "/img/merch",
                     "image_name": "stein.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -149,11 +162,12 @@
                     "category": "drinkware",
                     "image_path": "/img/merch",
                     "image_name": "sili_pint.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
                     "name": "Shot Glass",
-                    "description": "Beantown Shot Glass",
+                    "description": "2oz Beantown Shot Glass",
                     "price": 6.99,
                     "one_size": true,
                     "sizes": false,
@@ -161,6 +175,7 @@
                     "category": "drinkware",
                     "image_path": "/img/merch",
                     "image_name": "shot_glass.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -173,6 +188,7 @@
                     "category": "drinkware",
                     "image_path": "/img/merch",
                     "image_name": "sili_shot_glass.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -185,6 +201,7 @@
                     "category": "drinkware",
                     "image_path": "/img/merch",
                     "image_name": "koozie.jpg",
+                    "location": "beantown",
                     "is_active": true
                 }
             ]
@@ -193,6 +210,7 @@
             "name": "accessories",
             "is_active": true,
             "has_sizes": false,
+            "location": "beantown",
             "items": [
                 {
                     "name": "Poncho",
@@ -204,6 +222,7 @@
                     "category": "accessories",
                     "image_path": "/img/merch",
                     "image_name": "poncho.jpg",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -216,6 +235,7 @@
                     "category": "accessories",
                     "image_path": "/img/merch",
                     "image_name": "umbrella.png",
+                    "location": "beantown",
                     "is_active": true
                 },
                 {
@@ -228,7 +248,8 @@
                     "category": "accessories",
                     "image_path": "/img/merch",
                     "image_name": "poncho.jpg",
-                    "is_active": true
+                    "location": "beantown",
+                    "is_active": false
                 }
             ]
         }

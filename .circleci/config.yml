@@ -119,7 +119,15 @@ jobs:
               --namespace prod \
               --set global.env=prod \
               --set image.tag=$MERCH_API_VERSION \
-              --set logLevel=$LOG_LEVEL \
+              --set api_user=$API_USERNAME \
+              --set api_pass=$API_PASSWORD \
+              --set db_host=$DB_HOST \
+              --set db_pass=$DB_PASS \
+              --set db_port=$DB_PORT \
+              --set db_user=$DB_USER \
+              --set db_name=$MERCH_DB_NAME \
+              --set frontend_origin_url=$FRONTEND_ORIGIN_URL \
+              --set logLevel=INFO \
               --debug
 
 

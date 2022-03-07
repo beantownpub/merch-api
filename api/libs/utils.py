@@ -2,16 +2,27 @@ import os
 import uuid
 from .db_utils import get_item_from_db, run_db_action
 from .logging import init_logger
+from api.database.models import Product
+
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
-LOG = init_logger(log_level=LOG_LEVEL)
+LOG = init_logger(LOG_LEVEL)
 
 def make_uuid():
     return str(uuid.uuid4())
+
+
+def make_slug(name):
+    slug = name.lower().replace(' ', '-').replace('.', '').replace('&', 'and').strip('*')
+    return slug
 
 class ParamArgs:
     def __init__(self, args):
         self.args = args
         self.cart_id = args.get('cart_id')
+        self.location = args.get('location')
+        self.name = args.get('name')
+        self.sku = args.get('sku')
+        self.id = args.get('id')
 
     def __repr__(self):
         return repr(self.map)
@@ -19,7 +30,11 @@ class ParamArgs:
     @property
     def map(self):
         args_dict = {
-            "cart_id": self.cart_id
+            "cart_id": self.cart_id,
+            "location": self.location,
+            "name": self.name,
+            "id": self.id,
+            "sku": self.sku
         }
         return args_dict
 
@@ -40,7 +55,7 @@ def cart_item_to_dict(cart_item):
         "name": cart_item.product.name,
         "price": cart_item.product.price
     }
-    category = get_item_from_db('category', query={"name": cart_item.product.category_id})
+    category = get_item_from_db('category', query={"uuid": cart_item.product.category_id})
     if category.has_sizes:
         item_data["size"] = cart_item.size
     item_data['total'] = item_data['quantity'] * item_data['price']
@@ -72,3 +87,10 @@ def calculate_cart_total(cart):
             price = item.product.price
             item_prices.append(item_count * price)
     return round(sum(item_prices), 2)
+
+
+def get_product_by_slug(slug, location):
+    LOG.debug('Slug: %s | Location: %s', slug, location)
+    product = Product.query.filter_by(slug=slug, location=location).first()
+    LOG.debug('Product: %s', product)
+    return product
