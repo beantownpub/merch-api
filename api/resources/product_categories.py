@@ -137,7 +137,7 @@ class CategoryAPI(Resource):
 
     def get(self):
         args = ParamArgs(request.args)
-        LOG.info('GET Category: %s', args)
+        LOG.debug('GET Category: %s', args)
         category = get_category(args.name, args.location)
         if category:
             category = json.dumps(category)

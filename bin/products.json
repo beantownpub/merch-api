@@ -103,7 +103,7 @@
                     "image_path": "/img/merch",
                     "image_name": "leather_strap_hat.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": false
                 },
                 {
                     "name": "USA Hat",

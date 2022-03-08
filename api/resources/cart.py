@@ -147,7 +147,7 @@ class CartAPI(Resource):
             run_db_action(action='create', data=data, table='cart', query={"cart_id": cart_id})
             cart = get_item_from_db('cart', query={"cart_id": cart_id})
         else:
-            LOG.info('CartAPI | Cart ID already exists | %s', cart_id)
+            LOG.debug('CartAPI | Cart ID already exists | %s', cart_id)
         return cart
 
     def _get_cart(self, cart_id):

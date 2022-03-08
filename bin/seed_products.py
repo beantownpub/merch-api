@@ -50,14 +50,12 @@ def get_products():
 
 def post_item(product, url):
     url = f"{url}/v2/products"
-    print("Product: {}\nSku: {}".format(product["name"], product["sku"]))
+    print("Product: {}\nSku: {}\nStatus: {}".format(product["name"], product["sku"], product["is_active"]))
     if check_if_product_exists(url, product['sku']) != 200:
         r = post(url, json=product, headers=HEADERS, auth=AUTH)
     else:
         r = put(url, json=product, headers=HEADERS, auth=AUTH)
-    if r.status_code in range(200,300):
-        print("Ok Status: %s", r.status_code)
-    else:
+    if r.status_code not in range(200,300):
         print("POST Error Status: %s", r.status_code)
         raise SeedMerchException(r.content)
 
@@ -80,21 +78,6 @@ def create_category(category, environment):
     }
     url = f'{get_url(environment)}/v2/categories'
     post_category(data, url)
-
-
-def put_item(menu_item):
-    url = 'http://localhost:5000/v1/merch/products'
-    r = put(url, json=menu_item, headers=HEADERS, auth=AUTH)
-    if r.status_code in range(200,300):
-        print("Ok Status: %s", r.status_code)
-    else:
-        raise SeedMerchException(r.content)
-
-
-def delete_item(menu_item):
-    url = 'http://localhost:5000/v1/merch/items'
-    r = delete(url, json=menu_item)
-    print(r.status_code)
 
 
 if __name__ == '__main__':

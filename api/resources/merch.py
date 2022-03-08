@@ -39,7 +39,7 @@ class MerchAPI(Resource):
     @AUTH.login_required
     def get(self):
         args = ParamArgs(request.args)
-        LOG.info('Args | %s', args)
+        LOG.debug('Args | %s', args)
         category_list = []
         categories = _get_categories(args.location)
         if categories:
