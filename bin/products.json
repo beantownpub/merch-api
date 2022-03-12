@@ -17,7 +17,14 @@
                     "image_path": "/img/merch",
                     "image_name": "motto_shirt.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "smalls": 2,
+                        "mediums": 6,
+                        "larges": 4,
+                        "xls": 4,
+                        "xxls": 0
+                    }
                 },
                 {
                     "name": "Scripted Logo Shirt",
@@ -30,7 +37,14 @@
                     "image_path": "/img/merch",
                     "image_name": "scripted_logo_shirt.jpg",
                     "location": "beantown",
-                    "is_active": false
+                    "is_active": false,
+                    "inventory": {
+                        "smalls": 5,
+                        "mediums": 6,
+                        "larges": 7,
+                        "xls": 4,
+                        "xxls": 0
+                    }
                 },
                 {
                     "name": "Entering Beantown",
@@ -43,7 +57,14 @@
                     "image_path": "/img/merch",
                     "image_name": "entering_btown.jpg",
                     "location": "beantown",
-                    "is_active": false
+                    "is_active": false,
+                    "inventory": {
+                        "smalls": 5,
+                        "mediums": 6,
+                        "larges": 7,
+                        "xls": 4,
+                        "xxls": 0
+                    }
                 },
                 {
                     "name": "Guiness Shirt",
@@ -56,7 +77,14 @@
                     "image_path": "/img/merch",
                     "image_name": "guiness_shirt.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "smalls": 5,
+                        "mediums": 6,
+                        "larges": 7,
+                        "xls": 4,
+                        "xxls": 4
+                    }
                 },
                 {
                     "name": "Sam Adams Shirt",
@@ -69,7 +97,15 @@
                     "image_path": "/img/merch",
                     "image_name": "sam_adams_oyster.jpg",
                     "location": "beantown",
-                    "is_active": false
+                    "is_active": false,
+                    "inventory": {
+                        "quantity": 10,
+                        "smalls": 5,
+                        "mediums": 6,
+                        "larges": 7,
+                        "xls": 4,
+                        "xxls": 0
+                    }
                 }
             ]
         },
@@ -90,7 +126,10 @@
                     "image_path": "/img/merch",
                     "image_name": "script_hat.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "Leather Strap Hat",
@@ -103,7 +142,10 @@
                     "image_path": "/img/merch",
                     "image_name": "leather_strap_hat.jpg",
                     "location": "beantown",
-                    "is_active": false
+                    "is_active": false,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "USA Hat",
@@ -116,7 +158,10 @@
                     "image_path": "/img/merch",
                     "image_name": "btown_usa_hat.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 }
             ]
         },
@@ -137,7 +182,10 @@
                     "image_path": "/img/merch",
                     "image_name": "mug.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "32oz Stein",
@@ -150,7 +198,10 @@
                     "image_path": "/img/merch",
                     "image_name": "stein.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "16oz Sili Pint",
@@ -163,7 +214,10 @@
                     "image_path": "/img/merch",
                     "image_name": "sili_pint.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "Shot Glass",
@@ -176,7 +230,10 @@
                     "image_path": "/img/merch",
                     "image_name": "shot_glass.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "Sili Shot Glass",
@@ -189,7 +246,10 @@
                     "image_path": "/img/merch",
                     "image_name": "sili_shot_glass.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "Koozie",
@@ -202,7 +262,10 @@
                     "image_path": "/img/merch",
                     "image_name": "koozie.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 }
             ]
         },
@@ -223,7 +286,10 @@
                     "image_path": "/img/merch",
                     "image_name": "poncho.jpg",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "Umbrella",
@@ -236,7 +302,10 @@
                     "image_path": "/img/merch",
                     "image_name": "umbrella.png",
                     "location": "beantown",
-                    "is_active": true
+                    "is_active": true,
+                    "inventory": {
+                        "quantity": 10
+                    }
                 },
                 {
                     "name": "Test Purchase Item",
@@ -249,7 +318,10 @@
                     "image_path": "/img/merch",
                     "image_name": "poncho.jpg",
                     "location": "beantown",
-                    "is_active": false
+                    "is_active": false,
+                    "inventory": {
+                        "quantity": 1
+                    }
                 }
             ]
         }

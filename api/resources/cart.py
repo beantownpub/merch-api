@@ -75,24 +75,21 @@ def _get_cart_items(cart_id):
 
 
 def _calculate_cart_total(cart):
-        item_prices = []
-        # LOG.info('Getting cart items from db  - Query: %s', query)
-        cart_items = get_item_from_db('cart_item', query={"cart_id": cart.cart_id}, multiple=True)
-        for item in cart_items:
-            if item.product:
-                item_count = item.item_count
-                price = item.product.price
-                item_prices.append(item_count * price)
-            else:
-                LOG.error('Item not present | %s', item)
-        return round(sum(item_prices), 2)
+    item_prices = []
+    cart_items = get_item_from_db('cart_item', query={"cart_id": cart.cart_id}, multiple=True)
+    for item in cart_items:
+        if item.product:
+            item_count = item.item_count
+            price = item.product.price
+            item_prices.append(item_count * price)
+        else:
+            LOG.error('Item not present | %s', item)
+    return round(sum(item_prices), 2)
 
 
 class CartAPI(Resource):
     @AUTH.login_required
     def get(self):
-        # LOG.debug('Session Items: %s', session.items())
-        # LOG.info('Headers: %s', request.headers)
         LOG.debug('CartAPI | GET Cart-Id | %s', request.headers.get('Cart-Id'))
         cart_id = request.headers.get('Cart-Id')
         if not cart_id:
@@ -127,7 +124,6 @@ class CartAPI(Resource):
     @AUTH.login_required
     def delete(self):
         """Delete an item from the cart"""
-        # cart_id = session.get('CART_ID')
         cart_id = request.headers.get('Cart-Id')
         LOG.debug('CartAPI | DELETE Cart ID | %s', cart_id)
         sku = request.get_json()['sku']
@@ -139,7 +135,6 @@ class CartAPI(Resource):
         return Response(json.dumps(cart_info), mimetype='application/json', status=200)
 
     def _create_cart(self, cart_id):
-        # session['CART_ID'] = cart_id
         data = {"cart_id": cart_id}
         cart = get_item_from_db('cart', query={"cart_id": cart_id})
         if not cart:

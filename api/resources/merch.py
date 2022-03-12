@@ -7,7 +7,7 @@ from flask_restful import Resource
 
 from api.database.models import Category, Product
 from api.libs.logging import init_logger
-from api.libs.utils import db_item_to_dict, ParamArgs
+from api.libs.utils import db_item_to_dict, get_inventory_by_id, total_item_inventory, ParamArgs
 
 AUTH = HTTPBasicAuth()
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
@@ -34,6 +34,12 @@ def _get_products_by_category(category, location, active=True):
     LOG.debug('_get_products_by_category | Active: %s | %s', active, products)
     return products
 
+def _get_inventory_dict(id):
+    inventory = get_inventory_by_id(id)
+    total_items = total_item_inventory(inventory)
+    inventory_dict = db_item_to_dict(inventory)
+    inventory_dict['total'] = total_items
+    return inventory_dict
 
 class MerchAPI(Resource):
     @AUTH.login_required
@@ -48,7 +54,10 @@ class MerchAPI(Resource):
                 products = _get_products_by_category(category.uuid, args.location)
                 category = db_item_to_dict(category)
                 for product in products:
-                    product_list.append(db_item_to_dict(product))
+                    inventory_id = product.inventory_id
+                    product = db_item_to_dict(product)
+                    product['inventory'] = _get_inventory_dict(inventory_id)
+                    product_list.append(product)
                     category['products'] = product_list
                 category_list.append(category)
             # LOG.debug('MerchAPI | GET | Categories INFO: %s', category_list)

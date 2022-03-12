@@ -10,7 +10,15 @@ from api.database.models import Product, Category, Inventory
 from api.database.db import DB
 from api.libs.db_utils import run_db_action, get_item_from_db
 from api.libs.logging import init_logger
-from api.libs.utils import db_item_to_dict, get_product_by_slug, make_slug, make_uuid, ParamArgs
+from api.libs.utils import (
+    db_item_to_dict,
+    get_product_by_slug,
+    make_slug,
+    make_uuid,
+    get_inventory_by_id,
+    total_item_inventory,
+    ParamArgs
+)
 
 AUTH = HTTPBasicAuth()
 
@@ -33,6 +41,11 @@ def get_product_by_sku(sku):
     if product:
         LOG.debug('get_product Found %s', id)
         product_data = db_item_to_dict(product)
+        inventory = get_inventory_by_id(product.inventory_id)
+        inventory_total = total_item_inventory(inventory)
+        inventory = db_item_to_dict(inventory)
+        inventory['total'] = inventory_total
+        product_data['inventory'] = inventory
         return product_data
 
 
@@ -123,7 +136,23 @@ def update_product(request):
         product.slug = slug
         DB.session.add(product)
         DB.session.commit()
+        update_inventory(product, body['inventory'])
         return product
+
+
+def update_inventory(product, body):
+    inventory = get_inventory_by_id(product.inventory_id)
+    if inventory.has_sizes:
+        inventory.small = body['smalls']
+        inventory.medium = body['mediums']
+        inventory.large = body['larges']
+        inventory.xl = body['xls']
+        inventory.xxl = body['xxls']
+    else:
+        inventory.quantity = body['quantity']
+    DB.session.add(inventory)
+    DB.session.commit()
+    return True
 
 
 class ProductAPI(Resource):

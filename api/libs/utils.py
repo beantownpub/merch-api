@@ -2,7 +2,7 @@ import os
 import uuid
 from .db_utils import get_item_from_db, run_db_action
 from .logging import init_logger
-from api.database.models import Product
+from api.database.models import Product, Inventory
 
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
 LOG = init_logger(LOG_LEVEL)
@@ -94,3 +94,18 @@ def get_product_by_slug(slug, location):
     product = Product.query.filter_by(slug=slug, location=location).first()
     LOG.debug('Product: %s', product)
     return product
+
+
+def total_item_inventory(inventory):
+    """Get the total number units in stock for a single item"""
+    if inventory.has_sizes:
+        total = sum([inventory.small, inventory.medium, inventory.large, inventory.xl, inventory.xxl])
+    else:
+        total = inventory.quantity
+    return total
+
+def get_inventory_by_id(id):
+    LOG.debug('ID: %s ', id)
+    inventory = Inventory.query.filter_by(id=id).first()
+    LOG.debug('Inventory: %s', inventory)
+    return inventory
