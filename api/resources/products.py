@@ -79,8 +79,6 @@ def get_active_products_by_category(category):
 
 
 
-
-
 def create_product(request):
     body = request.get_json()
     slug = make_slug(body['name'])
@@ -102,11 +100,13 @@ def create_product(request):
             location=body['location'],
             image_name=body['image_name'],
             image_path=body['image_path'],
+            has_sizes=category.has_sizes,
             uuid=make_uuid(),
             slug=slug
         )
         DB.session.add(product)
         DB.session.commit()
+        update_inventory(product, body['inventory'])
     product = get_product(name, body['location'])
     if product:
         return product
@@ -133,6 +133,7 @@ def update_product(request):
         product.location = body['location']
         product.image_name = body['image_name']
         product.image_path = body['image_path']
+        product.has_sizes = category.has_sizes
         product.slug = slug
         DB.session.add(product)
         DB.session.commit()

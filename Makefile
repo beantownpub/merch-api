@@ -27,7 +27,7 @@ compile:
 	pip-compile requirements.in
 
 build:
-	@echo "\033[1;32m. . . Building Merch API image . . .\033[1;37m\n"
+	@echo "\033[1;32m. . . Building $(image):$(image_tag) . . .\033[1;37m\n"
 	docker build -t $(image):$(image_tag) .
 
 publish: build

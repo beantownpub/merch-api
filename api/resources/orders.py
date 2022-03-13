@@ -9,10 +9,10 @@ from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from api.database.models import Address, Customer, Order, Product, Cart, CartItem
+from api.database.models import Address, Customer, Order, Product, Cart, CartItem, Inventory
 from api.database.db import DB
 from api.libs.db_utils import run_db_action, get_item_from_db
-from api.libs.utils import cart_item_to_dict, get_cart_items
+from api.libs.utils import make_uuid, ParamArgs
 from api.libs.logging import init_logger
 from api.libs.notify import send_order_confirmation
 
@@ -97,14 +97,16 @@ def create_customer(data):
         return customer
 
 
-def create_order(data, customer):
+def create_order(data, customer, location=None):
     LOG.debug('Creating order from cart %s', data['cart_id'])
     LOG.debug('Creating order for %s', customer.id)
     # cart = get_item_from_db('cart', query={"cart_id": data['cart_id']})
     order = Order(
         customer=customer.email_address,
         cart_id=data['cart_id'],
-        items=data['cart_items']
+        items=data['cart_items'],
+        uuid=make_uuid(),
+        location=location
     )
     DB.session.add(order)
     DB.session.commit()
@@ -133,6 +135,15 @@ def add_to_order(product, data, cart):
     LOG.debug('- Adding to order: Name: %s | Data: %s', product.name, item)
     run_db_action(action='create', data=item, table='order_item', query={"cart_id": cart.cart_id})
 
+def _upadte_inventory_size_quantity(inventory, size, quantity):
+    sizes = {
+        "small": inventory.small,
+        "medium": inventory.medium,
+        "large": inventory.large,
+        "xl": inventory.xl,
+        "xxl": inventory.xxl
+    }
+    inventory = sizes.get(size)
 
 class OrdersAPI(Resource):
     # @auth.login_required
@@ -151,9 +162,10 @@ class OrdersAPI(Resource):
 
     @AUTH.login_required
     def post(self):
+        args = ParamArgs(request.args)
         data = request.get_json()
-        LOG.info('| OrderAPI | POST | DATA: %s', data)
-        order = self._create_order(data)
+        LOG.info('| OrderAPI | POST | Location: %s | DATA: %s',args.location, data['order'])
+        order = self._create_order(data, args.location)
         order_data = {
             'order_id': order.id
         }
@@ -171,12 +183,40 @@ class OrdersAPI(Resource):
         Order.objects.get(sku=sku).delete()
         return '', 204
 
-    def _create_order(self, data):
+    def _create_order(self, data, location=None):
         customer_info = data['order']
         order_info = customer_info['cart']
+        self._update_inventory(order_info['cart_items'])
         customer = create_customer(customer_info)
-        order = create_order(order_info, customer)
+        order = create_order(order_info, customer, location=location)
         return order
+
+    def _update_inventory(self, cart_items):
+        for item in cart_items:
+            product = Product.query.filter_by(id=item['sku']).first()
+            inventory = Inventory.query.filter_by(id=product.id).first()
+            if not product.has_sizes:
+                new_quantity = inventory.quantity - item['quantity']
+                inventory.quantity = new_quantity
+            else:
+                if item['size'] == 'small':
+                    new_quantity = inventory.small - item['quantity']
+                    inventory.small = new_quantity
+                elif item['size'] == 'medium':
+                    new_quantity = inventory.medium - item['quantity']
+                    inventory.medium = new_quantity
+                elif item['size'] == 'large':
+                    new_quantity = inventory.large - item['quantity']
+                    inventory.large = new_quantity
+                elif item['size'] == 'xl':
+                    new_quantity = inventory.xl - item['quantity']
+                    inventory.xl = new_quantity
+                elif item['size'] == 'xxl':
+                    new_quantity = inventory.xxl - item['quantity']
+                    inventory.xxl = new_quantity
+            DB.session.add(inventory)
+            DB.session.commit()
+
 
 
 

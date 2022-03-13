@@ -5,8 +5,6 @@ from sqlalchemy.dialects.postgresql import JSON
 
 
 
-
-
 class Product(DB.Model):
     __tablename__ = 'product'
     id = DB.Column(DB.Integer, unique=True, primary_key=True)
@@ -15,11 +13,10 @@ class Product(DB.Model):
     description = DB.Column(DB.String)
     creation_date = DB.Column(DB.DateTime, default=datetime.utcnow)
     is_active = DB.Column(DB.Boolean)
-    # has_sizes = DB.Column(DB.Boolean)
+    has_sizes = DB.Column(DB.Boolean)
     price = DB.Column(DB.Float)
     image_name = DB.Column(DB.String)
     image_path = DB.Column(DB.String)
-    # category_id = DB.Column(DB.String, DB.ForeignKey('category.name'), nullable=False)
     category_id = DB.Column(DB.String, DB.ForeignKey('category.uuid'), nullable=False)
     inventory_id = DB.Column(DB.Integer, DB.ForeignKey('inventory.id'), nullable=False)
     location = DB.Column(DB.String)
@@ -116,3 +113,5 @@ class Order(DB.Model):
     time_created = DB.Column(DB.DateTime, default=datetime.utcnow)
     items = DB.Column(JSON)
     status = DB.Column(DB.Enum('received','pending', 'completed', 'cancelled', name="statuses"), default="pending")
+    location = DB.Column(DB.String)
+    uuid = DB.Column(DB.String, unique=True)
