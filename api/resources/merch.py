@@ -8,6 +8,7 @@ from flask_restful import Resource
 from api.database.models import Category, Product
 from api.libs.logging import init_logger
 from api.libs.utils import db_item_to_dict, get_inventory_by_id, total_item_inventory, ParamArgs
+from api.resources.products import get_image_db_objects
 
 AUTH = HTTPBasicAuth()
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
@@ -57,6 +58,9 @@ class MerchAPI(Resource):
                     inventory_id = product.inventory_id
                     product = db_item_to_dict(product)
                     product['inventory'] = _get_inventory_dict(inventory_id)
+                    images = get_image_db_objects(product['uuid'])
+                    images = [image.name for image in images]
+                    product['images'] = images
                     product_list.append(product)
                     category['products'] = product_list
                 category_list.append(category)

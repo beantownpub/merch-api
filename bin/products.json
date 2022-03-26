@@ -17,7 +17,11 @@
                     "image_path": "/img/merch",
                     "image_name": "motto_shirt.jpg",
                     "location": "beantown",
+                    "shipping_weight": "6oz",
                     "is_active": true,
+                    "images": [
+                        "motto_shirt.jpg"
+                    ],
                     "inventory": {
                         "smalls": 2,
                         "mediums": 6,
@@ -27,8 +31,33 @@
                     }
                 },
                 {
-                    "name": "Scripted Logo Shirt",
-                    "description": "Shirt with Beantown Scripted Logo",
+                    "name": "Sam Adams Shirt",
+                    "description": "Limited Edition Beantown slogan shirt",
+                    "price": 28.99,
+                    "sku": 111,
+                    "one_size": false,
+                    "sizes": true,
+                    "category": "tshirts",
+                    "image_path": "/img/merch",
+                    "image_name": "new_sam_adams_shirt_back.png",
+                    "location": "beantown",
+                    "is_active": true,
+                    "shipping_weight": "6oz",
+                    "images": [
+                        "new_sam_adams_shirt_back.png",
+                        "new_sam_adams_shirt_full_front.png"
+                    ],
+                    "inventory": {
+                        "smalls": 0,
+                        "mediums": 2,
+                        "larges": 1,
+                        "xls": 2,
+                        "xxls": 0
+                    }
+                },
+                {
+                    "name": "Downeast Scripted Logo Shirt",
+                    "description": "Shirt with Beantown scripted logo and Downeast logo on back",
                     "price": 23.99,
                     "sku": 120,
                     "one_size": false,
@@ -38,11 +67,15 @@
                     "image_name": "scripted_logo_shirt.jpg",
                     "location": "beantown",
                     "is_active": false,
+                    "shipping_weight": "6oz",
+                    "images": [
+                        "scripted_logo_shirt.jpg"
+                    ],
                     "inventory": {
-                        "smalls": 5,
-                        "mediums": 6,
-                        "larges": 7,
-                        "xls": 4,
+                        "smalls": 0,
+                        "mediums": 0,
+                        "larges": 0,
+                        "xls": 0,
                         "xxls": 0
                     }
                 },
@@ -58,11 +91,15 @@
                     "image_name": "entering_btown.jpg",
                     "location": "beantown",
                     "is_active": false,
+                    "shipping_weight": "6oz",
+                    "images": [
+                        "entering_btown.jpg"
+                    ],
                     "inventory": {
-                        "smalls": 5,
-                        "mediums": 6,
-                        "larges": 7,
-                        "xls": 4,
+                        "smalls": 0,
+                        "mediums": 0,
+                        "larges": 0,
+                        "xls": 0,
                         "xxls": 0
                     }
                 },
@@ -78,6 +115,10 @@
                     "image_name": "guiness_shirt.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "shipping_weight": "6oz",
+                    "images": [
+                        "guiness_shirt.jpg"
+                    ],
                     "inventory": {
                         "smalls": 5,
                         "mediums": 6,
@@ -87,23 +128,52 @@
                     }
                 },
                 {
-                    "name": "Sam Adams Shirt",
-                    "description": "Sam Adams Shirt",
-                    "price": 23.99,
+                    "name": "Beantown scripted shirt",
+                    "description": "Beantown's scripted logo, one side shirt",
+                    "price": 24.99,
                     "sku": 140,
                     "one_size": false,
                     "sizes": true,
                     "category": "tshirts",
                     "image_path": "/img/merch",
-                    "image_name": "sam_adams_oyster.jpg",
+                    "image_name": "scripted_one_side.png",
                     "location": "beantown",
-                    "is_active": false,
+                    "is_active": true,
+                    "shipping_weight": "6oz",
+                    "images": [
+                        "scripted_one_side.png"
+                    ],
                     "inventory": {
-                        "quantity": 10,
-                        "smalls": 5,
-                        "mediums": 6,
-                        "larges": 7,
-                        "xls": 4,
+                        "quantity": 0,
+                        "smalls": 2,
+                        "mediums": 2,
+                        "larges": 2,
+                        "xls": 2,
+                        "xxls": 0
+                    }
+                },
+                {
+                    "name": "Woman's scripted shirt",
+                    "description": "Women's Beantown scripted logo, one side shirt",
+                    "price": 24.99,
+                    "sku": 141,
+                    "one_size": false,
+                    "sizes": true,
+                    "category": "tshirts",
+                    "image_path": "/img/merch",
+                    "image_name": "womens_scripted_oneside.png",
+                    "location": "beantown",
+                    "is_active": true,
+                    "shipping_weight": "6oz",
+                    "images": [
+                        "womens_scripted_oneside.png"
+                    ],
+                    "inventory": {
+                        "quantity": 0,
+                        "smalls": 2,
+                        "mediums": 2,
+                        "larges": 2,
+                        "xls": 2,
                         "xxls": 0
                     }
                 }
@@ -126,9 +196,13 @@
                     "image_path": "/img/merch",
                     "image_name": "script_hat.jpg",
                     "location": "beantown",
-                    "is_active": true,
+                    "shipping_weight": "6oz",
+                    "is_active": false,
+                    "images": [
+                        "script_hat.jpg"
+                    ],
                     "inventory": {
-                        "quantity": 10
+                        "quantity": 0
                     }
                 },
                 {
@@ -142,9 +216,13 @@
                     "image_path": "/img/merch",
                     "image_name": "leather_strap_hat.jpg",
                     "location": "beantown",
+                    "shipping_weight": "6oz",
                     "is_active": false,
+                    "images": [
+                        "leather_strap_hat.jpg"
+                    ],
                     "inventory": {
-                        "quantity": 10
+                        "quantity": 0
                     }
                 },
                 {
@@ -158,7 +236,11 @@
                     "image_path": "/img/merch",
                     "image_name": "btown_usa_hat.jpg",
                     "location": "beantown",
+                    "shipping_weight": "6oz",
                     "is_active": true,
+                    "images": [
+                        "btown_usa_hat.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -183,6 +265,9 @@
                     "image_name": "mug.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "mug.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -199,6 +284,9 @@
                     "image_name": "stein.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "stein.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -215,6 +303,9 @@
                     "image_name": "sili_pint.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "sili_pint.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -231,6 +322,9 @@
                     "image_name": "shot_glass.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "shot_glass.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -247,6 +341,9 @@
                     "image_name": "sili_shot_glass.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "sili_shot_glass.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -263,6 +360,9 @@
                     "image_name": "koozie.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "koozie.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -287,6 +387,9 @@
                     "image_name": "poncho.jpg",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "poncho.jpg"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -303,6 +406,9 @@
                     "image_name": "umbrella.png",
                     "location": "beantown",
                     "is_active": true,
+                    "images": [
+                        "umbrella.png"
+                    ],
                     "inventory": {
                         "quantity": 10
                     }
@@ -319,6 +425,9 @@
                     "image_name": "poncho.jpg",
                     "location": "beantown",
                     "is_active": false,
+                    "images": [
+                        "poncho.jpg"
+                    ],
                     "inventory": {
                         "quantity": 1
                     }

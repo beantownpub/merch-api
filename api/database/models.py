@@ -20,10 +20,18 @@ class Product(DB.Model):
     category_id = DB.Column(DB.String, DB.ForeignKey('category.uuid'), nullable=False)
     inventory_id = DB.Column(DB.Integer, DB.ForeignKey('inventory.id'), nullable=False)
     location = DB.Column(DB.String)
+    shipping_weight = DB.Column(DB.String(50))
     slug = DB.Column(DB.String(50))
     uuid = DB.Column(DB.String, unique=True)
     cart = DB.relationship('CartItem', backref='product', lazy=True)
 
+class ProductImage(DB.Model):
+    __tablename__ = 'product_images'
+
+    id = DB.Column(DB.Integer, autoincrement=True, primary_key=True, unique=True)
+    name = DB.Column(DB.String(50))
+    product_id = DB.Column(DB.String, DB.ForeignKey('product.uuid'), nullable=False)
+    uuid = DB.Column(DB.String, unique=True)
 
 class Category(DB.Model):
     __tablename__ = 'category'

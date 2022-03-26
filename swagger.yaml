@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.6
+  version: 0.1.7
   title: Merch API
   description: An API for interacting with merchandise
 

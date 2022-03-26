@@ -113,6 +113,7 @@ class CartAPI(Resource):
             resp = {"status": 400, "response": "Cart-Id not found"}
         else:
             data = request.get_json()
+            LOG.info('DATA: %s', data)
             product = get_item_from_db('product', query={"id": data['sku']})
             cart = get_item_from_db('cart', {"cart_id": cart_id})
             add_to_cart(product, data, cart)
