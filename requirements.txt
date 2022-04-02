@@ -27,7 +27,7 @@ flask==1.1.2
     #   flask-sqlalchemy
 flask-cors==3.0.9
     # via -r requirements.in
-flask-httpauth==4.2.0
+flask-httpauth==4.5.0
     # via -r requirements.in
 flask-migrate==3.1.0
     # via -r requirements.in
