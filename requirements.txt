@@ -14,7 +14,7 @@ cachelib==0.1.1
     # via flask-session
 certifi==2020.11.8
     # via requests
-chardet==3.0.4
+charset-normalizer==2.0.12
     # via requests
 click==7.1.2
     # via flask
@@ -69,7 +69,7 @@ pytz==2020.4
     #   flask-restful
 redis==4.2.1
     # via -r requirements.in
-requests==2.25.0
+requests==2.27.1
     # via -r requirements.in
 six==1.15.0
     # via
