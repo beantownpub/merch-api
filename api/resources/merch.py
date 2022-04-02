@@ -8,6 +8,7 @@ from flask_restful import Resource
 from api.database.models import Category, Product
 from api.libs.logging import init_logger
 from api.libs.utils import db_item_to_dict, get_inventory_by_id, total_item_inventory, ParamArgs
+from api.libs.redis import get_cache, set_cache
 from api.resources.products import get_image_db_objects
 
 AUTH = HTTPBasicAuth()
@@ -47,23 +48,28 @@ class MerchAPI(Resource):
     def get(self):
         args = ParamArgs(request.args)
         LOG.debug('Args | %s', args)
-        category_list = []
-        categories = _get_categories(args.location)
-        if categories:
-            for category in categories:
-                product_list = []
-                products = _get_products_by_category(category.uuid, args.location)
-                category = db_item_to_dict(category)
-                for product in products:
-                    inventory_id = product.inventory_id
-                    product = db_item_to_dict(product)
-                    product['inventory'] = _get_inventory_dict(inventory_id)
-                    images = get_image_db_objects(product['uuid'])
-                    images = [image.name for image in images]
-                    product['images'] = images
-                    product_list.append(product)
-                    category['products'] = product_list
-                category_list.append(category)
+        category_list = get_cache('merch')
+        if category_list:
+            category_list = json.loads(category_list.decode('UTF-8'))
+        else:
+            category_list = []
+            categories = _get_categories(args.location)
+            if categories:
+                for category in categories:
+                    product_list = []
+                    products = _get_products_by_category(category.uuid, args.location)
+                    category = db_item_to_dict(category)
+                    for product in products:
+                        inventory_id = product.inventory_id
+                        product = db_item_to_dict(product)
+                        product['inventory'] = _get_inventory_dict(inventory_id)
+                        images = get_image_db_objects(product['uuid'])
+                        images = [image.name for image in images]
+                        product['images'] = images
+                        product_list.append(product)
+                        category['products'] = product_list
+                    category_list.append(category)
+                    set_cache('merch', category_list)
             # LOG.debug('MerchAPI | GET | Categories INFO: %s', category_list)
         resp = {"status": 200, "response": json.dumps(category_list), "mimetype": "application/json"}
         return Response(**resp)

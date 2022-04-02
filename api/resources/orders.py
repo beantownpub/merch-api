@@ -15,6 +15,7 @@ from api.libs.db_utils import run_db_action, get_item_from_db
 from api.libs.utils import make_uuid, ParamArgs
 from api.libs.logging import init_logger
 from api.libs.notify import send_order_confirmation
+from api.libs.redis import delete_cache
 
 AUTH = HTTPBasicAuth()
 LOG_LEVEL= os.environ.get('LOG_LEVEL')
@@ -174,6 +175,7 @@ class OrdersAPI(Resource):
         if confirmation_status.status_code != 200:
             resp = {"status": 500, "response": f"Error confirming order"}
         else:
+            delete_cache('merch')
             resp = {"status": 200, "response": order_data, "mimetype": "application/json"}
         return Response(**resp)
 

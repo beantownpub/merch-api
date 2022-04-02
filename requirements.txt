@@ -8,6 +8,8 @@ alembic==1.7.7
     # via flask-migrate
 aniso8601==8.0.0
     # via flask-restful
+async-timeout==4.0.2
+    # via redis
 cachelib==0.1.1
     # via flask-session
 certifi==2020.11.8
@@ -16,6 +18,8 @@ chardet==3.0.4
     # via requests
 click==7.1.2
     # via flask
+deprecated==1.2.13
+    # via redis
 flask==1.1.2
     # via
     #   -r requirements.in
@@ -53,12 +57,18 @@ markupsafe==1.1.1
     # via
     #   jinja2
     #   mako
+packaging==21.3
+    # via redis
 psycopg2==2.8.6
     # via -r requirements.in
+pyparsing==3.0.7
+    # via packaging
 pytz==2020.4
     # via
     #   -r requirements.in
     #   flask-restful
+redis==4.2.1
+    # via -r requirements.in
 requests==2.25.0
     # via -r requirements.in
 six==1.15.0
@@ -73,6 +83,8 @@ urllib3==1.26.5
     # via requests
 werkzeug==1.0.1
     # via flask
+wrapt==1.14.0
+    # via deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

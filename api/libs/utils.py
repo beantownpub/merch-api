@@ -39,7 +39,6 @@ class ParamArgs:
         return args_dict
 
 def db_item_to_dict(item):
-    LOG.debug('db_item_to_dict | %s', item)
     item_dict = item.__dict__
     LOG.debug('item dict | %s', item_dict)
     if item_dict.get('_sa_instance_state'):
