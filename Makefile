@@ -54,3 +54,9 @@ seed:
 
 reset_db: context
 	${HOME}/github/helm/scripts/kill_pod.sh ${DATABASE_NAMESPACE} postgres
+
+migrate/make:
+	flask db migrate -m "$(migration_name)"
+
+migrate/upgrade:
+	flask db upgrade

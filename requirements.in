@@ -1,6 +1,7 @@
 flask
 flask-cors
 flask-httpauth
+flask-migrate
 flask-restful
 flask-session
 flask-sqlalchemy

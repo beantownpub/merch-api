@@ -20,7 +20,8 @@
                     "shipping_weight": "6oz",
                     "is_active": true,
                     "images": [
-                        "motto_shirt.jpg"
+                        "motto_shirt.jpg",
+                        "old_sam_adams_shirt_back.png"
                     ],
                     "inventory": {
                         "smalls": 2,

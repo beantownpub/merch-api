@@ -1,9 +1,6 @@
 from datetime import datetime
-from .db import DB
-
 from sqlalchemy.dialects.postgresql import JSON
-
-
+from .db import DB
 
 class Product(DB.Model):
     __tablename__ = 'product'
