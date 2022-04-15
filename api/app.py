@@ -39,8 +39,6 @@ APP.config['SQLALCHEMY_DATABASE_URI'] = "@".join(MERCH_DB)
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 APP.config['CORS_ALLOW_HEADERS'] = True
 APP.config['CORS_EXPOSE_HEADERS'] = True
-# APP.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')
-# APP.permanent_session_lifetime = datetime.timedelta(days=365)
 
 cors = CORS(
     APP,
