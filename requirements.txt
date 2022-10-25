@@ -59,7 +59,7 @@ markupsafe==1.1.1
     #   mako
 packaging==21.3
     # via redis
-psycopg2==2.8.6
+psycopg2==2.9.5
     # via -r requirements.in
 pyparsing==3.0.7
     # via packaging
